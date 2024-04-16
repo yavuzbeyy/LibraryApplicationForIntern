@@ -24,20 +24,36 @@ namespace Katmanli.Service.Services
         private readonly ITokenCreator _tokenCreator;
         private readonly DatabaseExecutions _databaseExecutions;
         private readonly SpParameters _spInformation;
+        private readonly ParameterList _parameterList;
 
-        public UserService(IMapper mapper, ITokenCreator tokenCreator,DatabaseExecutions databaseExecutions, SpParameters parameters)
+        public UserService(ITokenCreator tokenCreator,DatabaseExecutions databaseExecutions, SpParameters parameters, ParameterList parameterList)
         {
-            _mapper = mapper;
             _tokenCreator = tokenCreator;
             _databaseExecutions = databaseExecutions;
             _spInformation = parameters;
+            _parameterList = parameterList;
         }
 
         public IResponse<string> Create(UserCreate model)
         {
+            _parameterList.Reset();
+
+            Parameter parameter = new Parameter();
+            Parameter parameter2 = new Parameter();
+            Parameter parameter3 = new Parameter();
+            Parameter parameter4 = new Parameter();
+            Parameter parameter5 = new Parameter();
+            Parameter parameter6 = new Parameter();
+
+            parameter.Name = "@Name";
+            parameter.Value = model.Name;
+
+            parameter2.Name = "@Surname";
+            parameter2.Value = model.Surname;
+
             try
             {
-                _databaseExecutions.UserAddQuery("Sp_UserCreate",model);
+             //   _databaseExecutions.ExecuteQuery("Sp_UserCreate",model);
                 return new SuccessResponse<string>(Messages.Save("User"));
             }
             catch (Exception ex)
@@ -50,10 +66,14 @@ namespace Katmanli.Service.Services
         {
             try
             {
-                _spInformation.Reset();
-                _spInformation.DeleteById = id;
+                Parameter parameter = new Parameter();
+                _parameterList.Reset();
 
-                var requestResult = _databaseExecutions.UserExecuteQuery("Sp_UsersDeleteById", _spInformation);
+                parameter.Name = "@DeleteById";
+                parameter.Value = id;
+                _parameterList.Add(parameter);
+
+                var requestResult = _databaseExecutions.ExecuteQuery("Sp_UsersDeleteById", _parameterList);
 
                 if (int.Parse(requestResult) > 0) 
                 {
@@ -75,10 +95,13 @@ namespace Katmanli.Service.Services
         {
             try
             {
-                _spInformation.Reset();
-                _spInformation.FindById = id;
+                Parameter parameter = new Parameter();
+                
+                parameter.Name = "@Id";
+                parameter.Value = id;
+                _parameterList.Add(parameter);
 
-                var jsonResult = _databaseExecutions.UserExecuteQuery("Sp_UsersGetById",_spInformation);
+                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_UsersGetById",_parameterList);
 
                 var users = JsonConvert.DeserializeObject<IEnumerable<UserQuery>>(jsonResult);
 
@@ -101,10 +124,15 @@ namespace Katmanli.Service.Services
         {
             try
             {
-                _spInformation.Reset();
-                _spInformation.FindByName = username;
+                //_spInformation.Reset();
+                //_spInformation.FindByName = username;
+                Parameter parameter = new Parameter();
 
-                var jsonResult = _databaseExecutions.UserExecuteQuery("Sp_UsersGetByUsername",_spInformation);
+                parameter.Name = "@Username";
+                parameter.Value = username;
+                _parameterList.Add(parameter);
+
+                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_UsersGetByUsername",_parameterList);
 
                 var users = JsonConvert.DeserializeObject<IEnumerable<UserQuery>>(jsonResult);
 
@@ -126,8 +154,9 @@ namespace Katmanli.Service.Services
         {
             try
             {
-                _spInformation.Reset();
-                var jsonResult = _databaseExecutions.UserExecuteQuery("Sp_UsersGetAll", _spInformation);
+                _parameterList.Reset();
+
+                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_UsersGetAll",_parameterList);
 
                 var users = JsonConvert.DeserializeObject<List<UserQuery>>(jsonResult);
 

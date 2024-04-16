@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Katmanli.DataAccess.DTOs
 {
-    public class SpParameters
+    public class SpParameters 
     {
         public int? FindById { get; set; }
 
