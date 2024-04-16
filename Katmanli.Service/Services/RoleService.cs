@@ -23,7 +23,9 @@ namespace Katmanli.Service.Services
         {
             try
             {
-                var jsonResult = _databaseExecutions.ExecuteQueryToJson("Sp_RolesGetAll");
+                SpParameters spParameters = new SpParameters();
+
+                var jsonResult = _databaseExecutions.UserExecuteQuery("Sp_RolesGetAll", spParameters);
 
                 var users = JsonConvert.DeserializeObject<List<Role>>(jsonResult);
 

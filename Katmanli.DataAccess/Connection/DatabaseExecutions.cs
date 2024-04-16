@@ -13,6 +13,7 @@ using System.Windows.Input;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using Katmanli.DataAccess.DTOs;
 
 namespace Katmanli.DataAccess.Connection
 {
@@ -28,8 +29,7 @@ namespace Katmanli.DataAccess.Connection
             _connectionString = configuration.GetConnectionString("DatabaseConnection");
         }
 
-        
-
+        // Ekleme ve Update İşlemleri için
         public void ExecuteQuery(string storedProcedureName)
         {
             using (SqlConnection sqlConnection = new SqlConnection(_connectionString))
@@ -42,7 +42,9 @@ namespace Katmanli.DataAccess.Connection
         }
         }
 
-        public string ExecuteQueryToJson(string storedProcedureName)
+        //GetAll , FindById , GetByUsername
+        // public string UserExecuteQuery(string storedProcedureName, int? id = null,string? username = null)
+        public string UserExecuteQuery(string storedProcedureName, SpParameters parameters)
         {
         List<Dictionary<string, object>> results = new List<Dictionary<string, object>>();
 
@@ -51,7 +53,25 @@ namespace Katmanli.DataAccess.Connection
             using (SqlCommand command = new SqlCommand(storedProcedureName, sqlConnection))
             {
                 command.CommandType = CommandType.StoredProcedure;
-                sqlConnection.Open();
+                
+                if(parameters.FindByName  != null)
+                        command.Parameters.AddWithValue("@Username", parameters.FindByName);
+                else if(parameters.FindById != null)
+                        command.Parameters.AddWithValue("@Id", parameters.FindById);
+                    if (parameters.DeleteById != null)
+                    {
+                        command.Parameters.AddWithValue("@DeleteById", parameters.DeleteById);
+
+                        sqlConnection.Open();
+
+                        // ExecuteNonQuery ile silme işlemini gerçekleştir
+                        int rowsAffected = command.ExecuteNonQuery();
+
+                        return rowsAffected.ToString(); // Silinen satır sayısını döndür
+                    }
+
+
+                    sqlConnection.Open();
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -59,7 +79,6 @@ namespace Katmanli.DataAccess.Connection
                     {
                         Dictionary<string, object> row = new Dictionary<string, object>();
 
-                        // Okunan her satır için sütunları alıp dictionary'e ekle
                         for (int i = 0; i < reader.FieldCount; i++)
                         {
                             string columnName = reader.GetName(i);
@@ -76,6 +95,7 @@ namespace Katmanli.DataAccess.Connection
         return jsonResult;
     }
 
-}
+
+    }
 }
 

@@ -11,11 +11,11 @@ namespace Katmanli.Core.Interfaces.ServiceInterfaces
     public interface IUserService
     {
         IResponse<IEnumerable<UserQuery>> ListAll();
-        IResponse<UserQuery> FindById(int id);
+        IResponse<IEnumerable<UserQuery>> FindById(int id);
         Task<IResponse<UserQuery>> Update(UserUpdate model);
-        Task<IResponse<string>> Create(UserCreate model);
-        Task<IResponse<string>> Delete(int id);
+        IResponse<string> Create(UserCreate model);
+        IResponse<string> Delete(int id);
         IResponse<string> Login(UserLoginDto loginModel);
-        IResponse<UserQuery> GetUserByUsername(string username);
+        IResponse<IEnumerable<UserQuery>> GetUserByUsername(string username);
     }
 }

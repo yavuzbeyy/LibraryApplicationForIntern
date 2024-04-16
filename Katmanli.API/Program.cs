@@ -3,6 +3,7 @@ using Katmanli.Core.Interfaces.ServiceInterfaces;
 using Katmanli.Core.SharedLibrary;
 using Katmanli.DataAccess;
 using Katmanli.DataAccess.Connection;
+using Katmanli.DataAccess.DTOs;
 using Katmanli.DataAccess.Entities;
 using Katmanli.DataAccess.Repository;
 using Katmanli.Service.Mapping;
@@ -22,12 +23,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(MapProfile));
 
 //Servis Kayýtlarý
-//builder.Services.AddScoped<IGenericRepository<User>,GenericRepository<User>>();
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ITokenCreator, TokenCreator>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<DatabaseExecutions, DatabaseExecutions>();
+builder.Services.AddScoped<SpParameters>();
 
 //DbContext Ekleme
 var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");

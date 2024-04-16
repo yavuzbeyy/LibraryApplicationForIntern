@@ -8,6 +8,7 @@ using Katmanli.DataAccess.DTOs;
 using Katmanli.DataAccess.Entities;
 using Katmanli.DataAccess.Repository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -22,26 +23,31 @@ namespace Katmanli.Service.Services
         private readonly IMapper _mapper;
         private readonly ITokenCreator _tokenCreator;
         private readonly DatabaseExecutions _databaseExecutions;
+        private readonly SpParameters _spInformation;
 
-        public UserService(IMapper mapper, ITokenCreator tokenCreator,DatabaseExecutions databaseExecutions)
+        public UserService(IMapper mapper, ITokenCreator tokenCreator,DatabaseExecutions databaseExecutions, SpParameters parameters)
         {
-
             _mapper = mapper;
             _tokenCreator = tokenCreator;
             _databaseExecutions = databaseExecutions;
+            _spInformation = parameters;
         }
 
-        public async Task<IResponse<string>> Create(UserCreate model)
+        public IResponse<string> Create(UserCreate model)
         {
             try
             {
                 var newUser = new User
                 {
+                    Name = model.Name,
+                    Surname = model.Surname,
                     Username = model.Username,
-                    Password = model.Password,
+                    Email = model.Email,
+                    UpdatedDate = DateTime.Now,
+                    Password = model.Password
                 };
 
-               // await _userRepository.AddAsync(newUser);
+
                 return new SuccessResponse<string>(Messages.Save("User"));
             }
             catch (Exception ex)
@@ -50,45 +56,80 @@ namespace Katmanli.Service.Services
             }
         }
 
-        public async Task<IResponse<string>> Delete(int id)
-        {
-            return null;
-            //var user = await _userRepository.GetByIdAsync(id);
-            //if (user == null)
-            //{
-            //    return new ErrorResponse<string>(Messages.NotFound("User"));
-            //}
-            //_userRepository.Delete(user);
-            //return new SuccessResponse<string>(Messages.Delete("User"));
-        }
-
-        public IResponse<UserQuery> FindById(int id)
-        {
-          //  var user = _userRepository.GetByIdAsync(id);
-
-          //  if (user == null)
-            {
-                return new ErrorResponse<UserQuery>(Messages.NotFound("User"));
-            }
-
-          //  var mappedUser = _mapper.Map<UserQuery>(user);
-         //   return new SuccessResponse<UserQuery>(mappedUser);
-
-        }
-
-        public IResponse<UserQuery> GetUserByUsername(string username)
+        public IResponse<string> Delete(int id)
         {
             try
             {
-                var jsonResult = _databaseExecutions.ExecuteQueryToJson("Sp_UsersGetByUsername");
+                _spInformation.Reset();
+                _spInformation.DeleteById = id;
 
-                var users = JsonConvert.DeserializeObject<UserQuery>(jsonResult);
+                var requestResult = _databaseExecutions.UserExecuteQuery("Sp_UsersDeleteById", _spInformation);
 
-                return new SuccessResponse<UserQuery>(users);
+                if (int.Parse(requestResult) > 0) 
+                {
+                    return new SuccessResponse<string>(Messages.Delete("Kullanıcı"));
+                }
+                else 
+                {
+                    return new ErrorResponse<string>(Messages.DeleteError("Kullanıcı"));
+                }
+
+                
             }
             catch (Exception ex)
             {
-                return new ErrorResponse<UserQuery>(ex.Message);
+                return new ErrorResponse<string>(ex.Message);
+            }
+        }
+
+        public IResponse<IEnumerable<UserQuery>> FindById(int id)
+        {
+            try
+            {
+                _spInformation.Reset();
+                _spInformation.FindById = id;
+
+                var jsonResult = _databaseExecutions.UserExecuteQuery("Sp_UsersGetById",_spInformation);
+
+                var users = JsonConvert.DeserializeObject<IEnumerable<UserQuery>>(jsonResult);
+
+                if (users.IsNullOrEmpty())
+                {
+                    //böyle bir kullanıcı bulunamadı.
+                    return new ErrorResponse<IEnumerable<UserQuery>>(Messages.NotFound("Kullanıcı"));
+                }
+
+                return new SuccessResponse<IEnumerable<UserQuery>>(users);
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse<IEnumerable<UserQuery>>(ex.Message);
+            }
+
+        }
+
+        public IResponse<IEnumerable<UserQuery>> GetUserByUsername(string username)
+        {
+            try
+            {
+                _spInformation.Reset();
+                _spInformation.FindByName = username;
+
+                var jsonResult = _databaseExecutions.UserExecuteQuery("Sp_UsersGetByUsername",_spInformation);
+
+                var users = JsonConvert.DeserializeObject<IEnumerable<UserQuery>>(jsonResult);
+
+                if (users.IsNullOrEmpty()) 
+                {
+                //böyle bir kullanıcı bulunamadı.
+                return new ErrorResponse<IEnumerable<UserQuery>>(Messages.NotFound("Kullanıcı"));
+                }
+
+                return new SuccessResponse<IEnumerable<UserQuery>>(users);
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse<IEnumerable<UserQuery>>(ex.Message);
             }
         }
 
@@ -96,7 +137,8 @@ namespace Katmanli.Service.Services
         {
             try
             {
-                var jsonResult = _databaseExecutions.ExecuteQueryToJson("Sp_UsersGetAll");
+                _spInformation.Reset();
+                var jsonResult = _databaseExecutions.UserExecuteQuery("Sp_UsersGetAll", _spInformation);
 
                 var users = JsonConvert.DeserializeObject<List<UserQuery>>(jsonResult);
 
