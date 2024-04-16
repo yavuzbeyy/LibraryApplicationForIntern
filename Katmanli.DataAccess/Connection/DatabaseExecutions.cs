@@ -30,17 +30,40 @@ namespace Katmanli.DataAccess.Connection
         }
 
         // Ekleme ve Update İşlemleri için
-        public void ExecuteQuery(string storedProcedureName)
+        public void UserAddQuery(string storedProcedureName, UserCreate model)
         {
             using (SqlConnection sqlConnection = new SqlConnection(_connectionString))
             {
                 using (SqlCommand command = new SqlCommand(storedProcedureName, sqlConnection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@Name", model.Name);
+                    command.Parameters.AddWithValue("@Surname", model.Surname);
+                    command.Parameters.AddWithValue("@Username", model.Username);
+                    command.Parameters.AddWithValue("@Email", model.Email);
+                    command.Parameters.AddWithValue("@UpdatedDate", DateTime.Now); 
+                    command.Parameters.AddWithValue("@Password", model.Password);
+
                     sqlConnection.Open();
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            int userId = Convert.ToInt32(reader["UserId"]);
+                            Console.WriteLine("Yeni kullanıcı eklendi. Kullanıcı ID: " + userId);
+
+                        }
+                    }
+
+                    reader.Close(); 
                 }
+            }
         }
-        }
+
 
         //GetAll , FindById , GetByUsername
         // public string UserExecuteQuery(string storedProcedureName, int? id = null,string? username = null)
@@ -64,13 +87,10 @@ namespace Katmanli.DataAccess.Connection
 
                         sqlConnection.Open();
 
-                        // ExecuteNonQuery ile silme işlemini gerçekleştir
                         int rowsAffected = command.ExecuteNonQuery();
 
-                        return rowsAffected.ToString(); // Silinen satır sayısını döndür
+                        return rowsAffected.ToString(); 
                     }
-
-
                     sqlConnection.Open();
 
                 using (SqlDataReader reader = command.ExecuteReader())

@@ -37,17 +37,7 @@ namespace Katmanli.Service.Services
         {
             try
             {
-                var newUser = new User
-                {
-                    Name = model.Name,
-                    Surname = model.Surname,
-                    Username = model.Username,
-                    Email = model.Email,
-                    UpdatedDate = DateTime.Now,
-                    Password = model.Password
-                };
-
-
+                _databaseExecutions.UserAddQuery("Sp_UserCreate",model);
                 return new SuccessResponse<string>(Messages.Save("User"));
             }
             catch (Exception ex)
@@ -73,7 +63,6 @@ namespace Katmanli.Service.Services
                 {
                     return new ErrorResponse<string>(Messages.DeleteError("Kullanıcı"));
                 }
-
                 
             }
             catch (Exception ex)
