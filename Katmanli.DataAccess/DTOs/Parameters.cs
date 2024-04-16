@@ -10,5 +10,11 @@ namespace Katmanli.DataAccess.DTOs
     {
         public string? Name { get; set; }
         public object? Value { get; set; }
+
+        public void addParameter(string parameterName,object value) 
+        { 
+           Name = parameterName;
+           Value = value;
+        }
     }
 }

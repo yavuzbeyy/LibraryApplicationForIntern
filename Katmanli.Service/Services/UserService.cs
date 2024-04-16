@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,44 +24,44 @@ namespace Katmanli.Service.Services
         private readonly IMapper _mapper;
         private readonly ITokenCreator _tokenCreator;
         private readonly DatabaseExecutions _databaseExecutions;
-        private readonly SpParameters _spInformation;
         private readonly ParameterList _parameterList;
 
-        public UserService(ITokenCreator tokenCreator,DatabaseExecutions databaseExecutions, SpParameters parameters, ParameterList parameterList)
+        public UserService(ITokenCreator tokenCreator, DatabaseExecutions databaseExecutions, ParameterList parameterList)
         {
             _tokenCreator = tokenCreator;
             _databaseExecutions = databaseExecutions;
-            _spInformation = parameters;
             _parameterList = parameterList;
         }
 
         public IResponse<string> Create(UserCreate model)
         {
-            _parameterList.Reset();
-
-            Parameter parameter = new Parameter();
-            Parameter parameter2 = new Parameter();
-            Parameter parameter3 = new Parameter();
-            Parameter parameter4 = new Parameter();
-            Parameter parameter5 = new Parameter();
-            Parameter parameter6 = new Parameter();
-
-            parameter.Name = "@Name";
-            parameter.Value = model.Name;
-
-            parameter2.Name = "@Surname";
-            parameter2.Value = model.Surname;
-
             try
             {
-             //   _databaseExecutions.ExecuteQuery("Sp_UserCreate",model);
-                return new SuccessResponse<string>(Messages.Save("User"));
+                //Hashlenmiş Password
+                string hashedPassword = _tokenCreator.GenerateHashedPassword(model.Password);
+
+                // Reset parameter list
+                var parameterList = new ParameterList();
+
+                parameterList.Add(new Parameter { Name = "@Name", Value = model.Name });
+                parameterList.Add(new Parameter { Name = "@Surname", Value = model.Surname });
+                parameterList.Add(new Parameter { Name = "@Username", Value = model.Username });
+                parameterList.Add(new Parameter { Name = "@Email", Value = model.Email });
+                parameterList.Add(new Parameter { Name = "@UpdatedDate", Value = DateTime.Now });
+                parameterList.Add(new Parameter { Name = "@Password", Value = hashedPassword });
+
+                string result = _databaseExecutions.ExecuteQuery("Sp_UserCreate", parameterList);
+
+                // Return success response
+                return new SuccessResponse<string>("User created successfully.");
             }
             catch (Exception ex)
             {
                 return new ErrorResponse<string>($"Failed to create user: {ex.Message}");
             }
         }
+
+
 
         public IResponse<string> Delete(int id)
         {
@@ -69,21 +70,20 @@ namespace Katmanli.Service.Services
                 Parameter parameter = new Parameter();
                 _parameterList.Reset();
 
-                parameter.Name = "@DeleteById";
-                parameter.Value = id;
+                parameter.addParameter("@DeleteById", id);
                 _parameterList.Add(parameter);
 
-                var requestResult = _databaseExecutions.ExecuteQuery("Sp_UsersDeleteById", _parameterList);
+                var requestResult = _databaseExecutions.ExecuteDeleteQuery("Sp_UsersDeleteById", _parameterList);
 
-                if (int.Parse(requestResult) > 0) 
+                if (requestResult > 0)
                 {
                     return new SuccessResponse<string>(Messages.Delete("Kullanıcı"));
                 }
-                else 
+                else
                 {
                     return new ErrorResponse<string>(Messages.DeleteError("Kullanıcı"));
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -96,18 +96,17 @@ namespace Katmanli.Service.Services
             try
             {
                 Parameter parameter = new Parameter();
-                
-                parameter.Name = "@Id";
-                parameter.Value = id;
+
+                parameter.addParameter("@Id", id);
+
                 _parameterList.Add(parameter);
 
-                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_UsersGetById",_parameterList);
+                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_UsersGetById", _parameterList);
 
                 var users = JsonConvert.DeserializeObject<IEnumerable<UserQuery>>(jsonResult);
 
                 if (users.IsNullOrEmpty())
                 {
-                    //böyle bir kullanıcı bulunamadı.
                     return new ErrorResponse<IEnumerable<UserQuery>>(Messages.NotFound("Kullanıcı"));
                 }
 
@@ -124,22 +123,19 @@ namespace Katmanli.Service.Services
         {
             try
             {
-                //_spInformation.Reset();
-                //_spInformation.FindByName = username;
                 Parameter parameter = new Parameter();
+                parameter.addParameter("@Username", username);
 
-                parameter.Name = "@Username";
-                parameter.Value = username;
                 _parameterList.Add(parameter);
 
-                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_UsersGetByUsername",_parameterList);
+                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_UsersGetByUsername", _parameterList);
 
                 var users = JsonConvert.DeserializeObject<IEnumerable<UserQuery>>(jsonResult);
 
-                if (users.IsNullOrEmpty()) 
+                if (users.IsNullOrEmpty())
                 {
-                //böyle bir kullanıcı bulunamadı.
-                return new ErrorResponse<IEnumerable<UserQuery>>(Messages.NotFound("Kullanıcı"));
+                    //böyle bir kullanıcı bulunamadı.
+                    return new ErrorResponse<IEnumerable<UserQuery>>(Messages.NotFound("Kullanıcı"));
                 }
 
                 return new SuccessResponse<IEnumerable<UserQuery>>(users);
@@ -156,7 +152,7 @@ namespace Katmanli.Service.Services
             {
                 _parameterList.Reset();
 
-                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_UsersGetAll",_parameterList);
+                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_UsersGetAll", _parameterList);
 
                 var users = JsonConvert.DeserializeObject<List<UserQuery>>(jsonResult);
 
@@ -186,9 +182,10 @@ namespace Katmanli.Service.Services
             return null;
         }
 
-        public async Task<IResponse<UserQuery>> Update(UserUpdate model)
+        public IResponse<UserQuery> Update(UserUpdate model)
         {
             throw new NotImplementedException();
         }
+
     }
 }

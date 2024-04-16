@@ -4,6 +4,7 @@ using Katmanli.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Katmanli.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240416091639_isAvailableAddedOnBook")]
+    partial class isAvailableAddedOnBook
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,33 +64,40 @@ namespace Katmanli.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AuthorId")
+                    b.Property<string>("AuthorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("AuthorId1")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CategoryId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("NumberOfPages")
+                    b.Property<int>("NumberOfPages")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PublicationYear")
+                    b.Property<int>("PublicationYear")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool?>("isAvailable")
+                    b.Property<bool>("isAvailable")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
+                    b.HasIndex("AuthorId1");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Books");
                 });
@@ -169,19 +179,19 @@ namespace Katmanli.DataAccess.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2024, 4, 16, 13, 10, 0, 339, DateTimeKind.Local).AddTicks(9782),
+                            CreatedDate = new DateTime(2024, 4, 16, 12, 16, 38, 963, DateTimeKind.Local).AddTicks(5900),
                             RoleName = "Admin"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2024, 4, 16, 13, 10, 0, 339, DateTimeKind.Local).AddTicks(9801),
+                            CreatedDate = new DateTime(2024, 4, 16, 12, 16, 38, 963, DateTimeKind.Local).AddTicks(5916),
                             RoleName = "User"
                         },
                         new
                         {
                             Id = 3,
-                            CreatedDate = new DateTime(2024, 4, 16, 13, 10, 0, 339, DateTimeKind.Local).AddTicks(9802),
+                            CreatedDate = new DateTime(2024, 4, 16, 12, 16, 38, 963, DateTimeKind.Local).AddTicks(5918),
                             RoleName = "Author"
                         });
                 });
@@ -223,9 +233,21 @@ namespace Katmanli.DataAccess.Migrations
 
             modelBuilder.Entity("Katmanli.DataAccess.Entities.Book", b =>
                 {
-                    b.HasOne("Katmanli.DataAccess.Entities.Author", null)
+                    b.HasOne("Katmanli.DataAccess.Entities.Author", "Author")
                         .WithMany("Books")
-                        .HasForeignKey("AuthorId");
+                        .HasForeignKey("AuthorId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Katmanli.DataAccess.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("Katmanli.DataAccess.Entities.Author", b =>

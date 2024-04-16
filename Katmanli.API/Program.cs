@@ -6,6 +6,7 @@ using Katmanli.DataAccess.Connection;
 using Katmanli.DataAccess.DTOs;
 using Katmanli.DataAccess.Entities;
 using Katmanli.DataAccess.Repository;
+using Katmanli.Service.Interfaces;
 using Katmanli.Service.Mapping;
 using Katmanli.Service.Services;
 using Microsoft.EntityFrameworkCore;
@@ -26,10 +27,10 @@ builder.Services.AddAutoMapper(typeof(MapProfile));
 builder.Services.AddScoped<ITokenCreator, TokenCreator>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<ICategoryService,CategoryService>();
 builder.Services.AddScoped<DatabaseExecutions, DatabaseExecutions>();
-builder.Services.AddScoped<SpParameters>();
 builder.Services.AddScoped<ParameterList>();
-builder.Services.AddScoped<Parameter>();
 
 //DbContext Ekleme
 var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");

@@ -15,17 +15,19 @@ namespace Katmanli.Service.Services
     public class RoleService : IRoleService
     {
         private readonly DatabaseExecutions _databaseExecutions;
-        public RoleService(DatabaseExecutions databaseExecutions) 
+        private readonly ParameterList _parameterList;
+        public RoleService(DatabaseExecutions databaseExecutions,ParameterList parameterList) 
         {
-            _databaseExecutions = databaseExecutions; 
+            _databaseExecutions = databaseExecutions;
+            _parameterList = parameterList;
         }
         public IResponse<IEnumerable<Role>> ListAll()
         {
             try
             {
-                SpParameters spParameters = new SpParameters();
+                _parameterList.Reset();
 
-                var jsonResult = _databaseExecutions.UserExecuteQuery("Sp_RolesGetAll", spParameters);
+                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_RolesGetAll", _parameterList);
 
                 var users = JsonConvert.DeserializeObject<List<Role>>(jsonResult);
 

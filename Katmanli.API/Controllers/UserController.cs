@@ -1,5 +1,6 @@
 ﻿using Katmanli.Core.Interfaces.DataAccessInterfaces;
 using Katmanli.Core.Interfaces.ServiceInterfaces;
+using Katmanli.Core.Response;
 using Katmanli.DataAccess.Connection;
 using Katmanli.DataAccess.DTOs;
 using Microsoft.AspNetCore.Http;
@@ -21,36 +22,66 @@ namespace Katmanli.API.Controllers
         [HttpGet("ListAll")]
         public IActionResult List()
         {
-            var getUsers = _userService.ListAll();
-            return Ok(getUsers);
+            var response = _userService.ListAll();
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response.Message); 
         }
 
         [HttpGet("GetUserByUsername")]
         public IActionResult GetUserByUsername(string username)
         {
-            var getUsers = _userService.GetUserByUsername(username);
-            return Ok(getUsers);
+            var response = _userService.GetUserByUsername(username);
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response.Message);
         }
 
         [HttpGet("GetUserByUserId")]
         public IActionResult GetUserById(int id)
         {
-            var getUsers = _userService.FindById(id);
-            return Ok(getUsers);
+            var response = _userService.FindById(id);
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response.Message);
         }
 
         [HttpPost("Create")]
-        public IActionResult Create(UserCreate userCreateModel) 
+        public IActionResult Create(UserCreate userCreateModel)
         {
-           var kullaniciOlustur = _userService.Create(userCreateModel);
-           return Ok(kullaniciOlustur);
+            var response = _userService.Create(userCreateModel);
+
+            if (response.Success)
+            {
+                return Ok(response.Message); 
+            }
+
+            return BadRequest(response.Message); 
         }
 
         [HttpDelete("Delete")]
         public IActionResult Delete(int id)
         {
-            var deletedUser =  _userService.Delete(id);
-            return Ok(deletedUser);
+            var response = _userService.Delete(id);
+
+            if (response.Success)
+            {
+                return Ok(response.Message); 
+            }
+
+            return BadRequest(response.Message); 
         }
     }
 }

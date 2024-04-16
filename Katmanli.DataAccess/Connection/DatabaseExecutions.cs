@@ -69,6 +69,30 @@ namespace Katmanli.DataAccess.Connection
             return jsonResult;
         }
 
+        public int ExecuteDeleteQuery(string storedProcedureName, ParameterList parameters)
+        {
+            List<Dictionary<string, object>> results = new List<Dictionary<string, object>>();
+
+            using (SqlConnection sqlConnection = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand command = new SqlCommand(storedProcedureName, sqlConnection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    foreach (var parameter in parameters)
+                    {
+                        command.Parameters.AddWithValue(parameter.Name, parameter.Value);
+                    }
+
+                    sqlConnection.Open();
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    return rowsAffected;
+
+                }
+            }
+        }
+
     }
 }
 

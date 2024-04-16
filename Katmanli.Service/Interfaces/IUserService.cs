@@ -12,7 +12,7 @@ namespace Katmanli.Core.Interfaces.ServiceInterfaces
     {
         IResponse<IEnumerable<UserQuery>> ListAll();
         IResponse<IEnumerable<UserQuery>> FindById(int id);
-        Task<IResponse<UserQuery>> Update(UserUpdate model);
+        IResponse<UserQuery> Update(UserUpdate model);
         IResponse<string> Create(UserCreate model);
         IResponse<string> Delete(int id);
         IResponse<string> Login(UserLoginDto loginModel);
