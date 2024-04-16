@@ -8,7 +8,7 @@ namespace Katmanli.DataAccess.DTOs
 {
     public class RoleCreate
     {
-
+        public string RoleName { get; set; }
     }
 
     public class RoleDelete

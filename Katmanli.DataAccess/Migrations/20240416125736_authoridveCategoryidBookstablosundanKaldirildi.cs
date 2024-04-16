@@ -6,45 +6,17 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Katmanli.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class isAvailableAddedOnBook : Migration
+    public partial class authoridveCategoryidBookstablosundanKaldirildi : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "isAvailable",
-                table: "Books",
-                type: "bit",
-                nullable: false,
-                defaultValue: false);
-
-            migrationBuilder.UpdateData(
-                table: "Roles",
-                keyColumn: "Id",
-                keyValue: 1,
-                column: "CreatedDate",
-                value: new DateTime(2024, 4, 16, 12, 16, 38, 963, DateTimeKind.Local).AddTicks(5900));
-
-            migrationBuilder.UpdateData(
-                table: "Roles",
-                keyColumn: "Id",
-                keyValue: 2,
-                column: "CreatedDate",
-                value: new DateTime(2024, 4, 16, 12, 16, 38, 963, DateTimeKind.Local).AddTicks(5916));
-
-            migrationBuilder.UpdateData(
-                table: "Roles",
-                keyColumn: "Id",
-                keyValue: 3,
-                column: "CreatedDate",
-                value: new DateTime(2024, 4, 16, 12, 16, 38, 963, DateTimeKind.Local).AddTicks(5918));
-        }
-
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
             migrationBuilder.DropColumn(
-                name: "isAvailable",
+                name: "AuthorId",
+                table: "Books");
+
+            migrationBuilder.DropColumn(
+                name: "CategoryId",
                 table: "Books");
 
             migrationBuilder.UpdateData(
@@ -52,21 +24,58 @@ namespace Katmanli.DataAccess.Migrations
                 keyColumn: "Id",
                 keyValue: 1,
                 column: "CreatedDate",
-                value: new DateTime(2024, 4, 15, 11, 31, 21, 802, DateTimeKind.Local).AddTicks(4631));
+                value: new DateTime(2024, 4, 16, 15, 57, 36, 687, DateTimeKind.Local).AddTicks(3976));
 
             migrationBuilder.UpdateData(
                 table: "Roles",
                 keyColumn: "Id",
                 keyValue: 2,
                 column: "CreatedDate",
-                value: new DateTime(2024, 4, 15, 11, 31, 21, 802, DateTimeKind.Local).AddTicks(4647));
+                value: new DateTime(2024, 4, 16, 15, 57, 36, 687, DateTimeKind.Local).AddTicks(3989));
 
             migrationBuilder.UpdateData(
                 table: "Roles",
                 keyColumn: "Id",
                 keyValue: 3,
                 column: "CreatedDate",
-                value: new DateTime(2024, 4, 15, 11, 31, 21, 802, DateTimeKind.Local).AddTicks(4648));
+                value: new DateTime(2024, 4, 16, 15, 57, 36, 687, DateTimeKind.Local).AddTicks(3990));
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.AddColumn<int>(
+                name: "AuthorId",
+                table: "Books",
+                type: "int",
+                nullable: true);
+
+            migrationBuilder.AddColumn<int>(
+                name: "CategoryId",
+                table: "Books",
+                type: "int",
+                nullable: true);
+
+            migrationBuilder.UpdateData(
+                table: "Roles",
+                keyColumn: "Id",
+                keyValue: 1,
+                column: "CreatedDate",
+                value: new DateTime(2024, 4, 16, 15, 49, 5, 658, DateTimeKind.Local).AddTicks(1692));
+
+            migrationBuilder.UpdateData(
+                table: "Roles",
+                keyColumn: "Id",
+                keyValue: 2,
+                column: "CreatedDate",
+                value: new DateTime(2024, 4, 16, 15, 49, 5, 658, DateTimeKind.Local).AddTicks(1708));
+
+            migrationBuilder.UpdateData(
+                table: "Roles",
+                keyColumn: "Id",
+                keyValue: 3,
+                column: "CreatedDate",
+                value: new DateTime(2024, 4, 16, 15, 49, 5, 658, DateTimeKind.Local).AddTicks(1709));
         }
     }
 }

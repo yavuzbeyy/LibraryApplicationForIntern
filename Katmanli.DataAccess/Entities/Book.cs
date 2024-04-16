@@ -14,7 +14,5 @@ namespace Katmanli.DataAccess.Entities
         public int? PublicationYear { get; set; }
         public int? NumberOfPages { get; set; }
         public bool? isAvailable { get; set; }
-        public int? AuthorId { get; set; }
-        public int? CategoryId { get; set; }
     }
 }

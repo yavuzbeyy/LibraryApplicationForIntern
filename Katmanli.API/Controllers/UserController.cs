@@ -83,5 +83,10 @@ namespace Katmanli.API.Controllers
 
             return BadRequest(response.Message); 
         }
+        [HttpPut("Update")]
+        public IActionResult Update()
+        {
+            return null;
+        }
     }
 }

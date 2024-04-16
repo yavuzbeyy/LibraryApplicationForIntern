@@ -15,7 +15,7 @@ namespace Katmanli.DataAccess.DTOs
             public int NumberOfPages { get; set; }
             public bool isAvailable { get; set; }
             public int? AuthorId { get; set; }
-            public int CategoryId { get; set; }
+            public int? CategoryId { get; set; }
         }
 
         public class BookDelete

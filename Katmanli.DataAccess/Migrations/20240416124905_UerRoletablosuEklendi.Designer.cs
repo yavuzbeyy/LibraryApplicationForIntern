@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Katmanli.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240415083122_entitiesUpdated")]
-    partial class entitiesUpdated
+    [Migration("20240416124905_UerRoletablosuEklendi")]
+    partial class UerRoletablosuEklendi
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,19 +37,16 @@ namespace Katmanli.DataAccess.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Surname")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("YearOfBirth")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("YearOfBirth")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -64,37 +61,31 @@ namespace Katmanli.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AuthorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("AuthorId1")
+                    b.Property<int?>("AuthorId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("NumberOfPages")
+                    b.Property<int?>("NumberOfPages")
                         .HasColumnType("int");
 
-                    b.Property<int>("PublicationYear")
+                    b.Property<int?>("PublicationYear")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool?>("isAvailable")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
-
-                    b.HasIndex("AuthorId1");
-
-                    b.HasIndex("CategoryId");
 
                     b.ToTable("Books");
                 });
@@ -139,7 +130,6 @@ namespace Katmanli.DataAccess.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
@@ -176,19 +166,19 @@ namespace Katmanli.DataAccess.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2024, 4, 15, 11, 31, 21, 802, DateTimeKind.Local).AddTicks(4631),
+                            CreatedDate = new DateTime(2024, 4, 16, 15, 49, 5, 658, DateTimeKind.Local).AddTicks(1692),
                             RoleName = "Admin"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2024, 4, 15, 11, 31, 21, 802, DateTimeKind.Local).AddTicks(4647),
+                            CreatedDate = new DateTime(2024, 4, 16, 15, 49, 5, 658, DateTimeKind.Local).AddTicks(1708),
                             RoleName = "User"
                         },
                         new
                         {
                             Id = 3,
-                            CreatedDate = new DateTime(2024, 4, 15, 11, 31, 21, 802, DateTimeKind.Local).AddTicks(4648),
+                            CreatedDate = new DateTime(2024, 4, 16, 15, 49, 5, 658, DateTimeKind.Local).AddTicks(1709),
                             RoleName = "Author"
                         });
                 });
@@ -228,28 +218,29 @@ namespace Katmanli.DataAccess.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Katmanli.DataAccess.Entities.Book", b =>
+            modelBuilder.Entity("Katmanli.DataAccess.Entities.UserRole", b =>
                 {
-                    b.HasOne("Katmanli.DataAccess.Entities.Author", "Author")
-                        .WithMany("Books")
-                        .HasForeignKey("AuthorId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.HasOne("Katmanli.DataAccess.Entities.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Navigation("Author");
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
 
-                    b.Navigation("Category");
-                });
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
-            modelBuilder.Entity("Katmanli.DataAccess.Entities.Author", b =>
-                {
-                    b.Navigation("Books");
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

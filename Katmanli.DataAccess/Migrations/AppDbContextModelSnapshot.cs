@@ -34,19 +34,16 @@ namespace Katmanli.DataAccess.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Surname")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("YearOfBirth")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("YearOfBirth")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -60,12 +57,6 @@ namespace Katmanli.DataAccess.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AuthorId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -86,8 +77,6 @@ namespace Katmanli.DataAccess.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
 
                     b.ToTable("Books");
                 });
@@ -132,7 +121,6 @@ namespace Katmanli.DataAccess.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
@@ -169,19 +157,19 @@ namespace Katmanli.DataAccess.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2024, 4, 16, 13, 10, 0, 339, DateTimeKind.Local).AddTicks(9782),
+                            CreatedDate = new DateTime(2024, 4, 16, 15, 57, 36, 687, DateTimeKind.Local).AddTicks(3976),
                             RoleName = "Admin"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2024, 4, 16, 13, 10, 0, 339, DateTimeKind.Local).AddTicks(9801),
+                            CreatedDate = new DateTime(2024, 4, 16, 15, 57, 36, 687, DateTimeKind.Local).AddTicks(3989),
                             RoleName = "User"
                         },
                         new
                         {
                             Id = 3,
-                            CreatedDate = new DateTime(2024, 4, 16, 13, 10, 0, 339, DateTimeKind.Local).AddTicks(9802),
+                            CreatedDate = new DateTime(2024, 4, 16, 15, 57, 36, 687, DateTimeKind.Local).AddTicks(3990),
                             RoleName = "Author"
                         });
                 });
@@ -221,16 +209,29 @@ namespace Katmanli.DataAccess.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Katmanli.DataAccess.Entities.Book", b =>
+            modelBuilder.Entity("Katmanli.DataAccess.Entities.UserRole", b =>
                 {
-                    b.HasOne("Katmanli.DataAccess.Entities.Author", null)
-                        .WithMany("Books")
-                        .HasForeignKey("AuthorId");
-                });
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-            modelBuilder.Entity("Katmanli.DataAccess.Entities.Author", b =>
-                {
-                    b.Navigation("Books");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

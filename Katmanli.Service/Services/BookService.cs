@@ -8,8 +8,10 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using Parameter = Katmanli.DataAccess.DTOs.Parameter;
 
 namespace Katmanli.Service.Services
 {
@@ -65,7 +67,7 @@ namespace Katmanli.Service.Services
 
                 var requestResult = _databaseExecutions.ExecuteDeleteQuery("Sp_BooksDeleteById", _parameterList);
 
-                if (requestResult > 0)
+                if (requestResult != null) //>0
                 {
                     return new SuccessResponse<string>(Messages.Delete("Kitap"));
                 }
@@ -120,6 +122,29 @@ namespace Katmanli.Service.Services
                 var kitaplar = JsonConvert.DeserializeObject<List<BookQuery>>(jsonResult);
 
                 return new SuccessResponse<IEnumerable<BookQuery>>(kitaplar);
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse<IEnumerable<BookQuery>>(ex.Message);
+            }
+        }
+
+        public IResponse<IEnumerable<BookQuery>> ListBooksByCategoryId(int categoryId)
+        {
+            try
+            {
+                _parameterList.Reset();
+                Parameter parameter = new Parameter();
+                parameter.Name = "@CategoryId";
+                parameter.Value = categoryId;
+
+                _parameterList.Add(parameter);
+
+                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_BooksGetByCategoryId", _parameterList);
+
+                var books = JsonConvert.DeserializeObject<List<BookQuery>>(jsonResult);
+
+                return new SuccessResponse<IEnumerable<BookQuery>>(books);
             }
             catch (Exception ex)
             {

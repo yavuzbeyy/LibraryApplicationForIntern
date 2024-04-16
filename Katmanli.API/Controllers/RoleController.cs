@@ -1,6 +1,10 @@
 ﻿using Katmanli.Core.Interfaces.ServiceInterfaces;
+using Katmanli.DataAccess.DTOs;
+using Katmanli.Service.Interfaces;
+using Katmanli.Service.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using static Katmanli.DataAccess.DTOs.CategoryDTO;
 
 namespace Katmanli.API.Controllers
 {
@@ -19,6 +23,44 @@ namespace Katmanli.API.Controllers
         {
             var getAllRoles = _roleService.ListAll();
             return Ok(getAllRoles);
+        }
+
+        [HttpGet("ListRolesByUser")]
+        public IActionResult ListRolesByUser()
+        {
+            var getAllRoles = _roleService.ListRolesByUser();
+            return Ok(getAllRoles);
+        }
+
+        [HttpDelete("Delete")]
+        public IActionResult Delete(int id)
+        {
+            var response = _roleService.Delete(id);
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response);
+        }
+
+        [HttpPost("Create")]
+        public IActionResult Create(RoleCreate roleCreateModel)
+        {
+            var response = _roleService.Create(roleCreateModel);
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response);
+        }
+        [HttpPut("Update")]
+        public IActionResult Update()
+        {
+            return null;
         }
     }
 }

@@ -13,6 +13,7 @@ namespace Katmanli.Service.Interfaces
     public interface IBookService
     {
         IResponse<IEnumerable<BookQuery>> ListAll();
+        IResponse<IEnumerable<BookQuery>> ListBooksByCategoryId(int categoryId);
         IResponse<IEnumerable<BookQuery>> FindById(int id);
         IResponse<BookQuery> Update(BookUpdate model);
         IResponse<string> Create(BookCreate model);

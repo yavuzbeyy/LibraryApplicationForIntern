@@ -21,7 +21,6 @@ namespace Katmanli.Service.Services
 {
     public class UserService : IUserService
     {
-        private readonly IMapper _mapper;
         private readonly ITokenCreator _tokenCreator;
         private readonly DatabaseExecutions _databaseExecutions;
         private readonly ParameterList _parameterList;
@@ -49,6 +48,7 @@ namespace Katmanli.Service.Services
                 parameterList.Add(new Parameter { Name = "@Email", Value = model.Email });
                 parameterList.Add(new Parameter { Name = "@UpdatedDate", Value = DateTime.Now });
                 parameterList.Add(new Parameter { Name = "@Password", Value = hashedPassword });
+                parameterList.Add(new Parameter { Name = "@RoleId", Value = model.RoleId });
 
                 string result = _databaseExecutions.ExecuteQuery("Sp_UserCreate", parameterList);
 

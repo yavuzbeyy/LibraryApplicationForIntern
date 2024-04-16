@@ -42,7 +42,7 @@ namespace Katmanli.Service.Services
             {
                 return new ErrorResponse<string>($"Failed to create category: {ex.Message}");
             }
-}
+            }
 
         public IResponse<string> Delete(int id)
         {

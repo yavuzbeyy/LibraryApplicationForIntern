@@ -15,12 +15,12 @@ namespace Katmanli.DataAccess.DTOs
 
         public class CategoryDelete
         {
-
+            public int Id { get; set; }
         }
 
         public class CategoryUpdate
         {
-
+            public string Name { get; set; }
         }
 
         public class CategoryQuery

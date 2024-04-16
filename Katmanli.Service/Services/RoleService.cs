@@ -1,5 +1,6 @@
 ﻿using Katmanli.Core.Interfaces.ServiceInterfaces;
 using Katmanli.Core.Response;
+using Katmanli.Core.SharedLibrary;
 using Katmanli.DataAccess.Connection;
 using Katmanli.DataAccess.DTOs;
 using Katmanli.DataAccess.Entities;
@@ -21,6 +22,52 @@ namespace Katmanli.Service.Services
             _databaseExecutions = databaseExecutions;
             _parameterList = parameterList;
         }
+
+        public IResponse<string> Create(RoleCreate model)
+        {
+            try { 
+            _parameterList.Reset();
+            _parameterList.Add(new Parameter { Name = "@Name", Value = model.RoleName });
+
+            var requestResult = _databaseExecutions.ExecuteQuery("Sp_RoleCreate", _parameterList);
+
+            return new SuccessResponse<string>("Role created successfully.");
+              }       
+            catch (Exception ex)
+            {
+                return new ErrorResponse<string>($"Failed to create book: {ex.Message}");
+            }
+}
+
+        public IResponse<string> Delete(int id)
+        {
+            try
+            {
+                Parameter parameter = new Parameter();
+                _parameterList.Reset();
+
+                parameter.Name = "@DeleteById";
+                parameter.Value = id;
+                _parameterList.Add(parameter);
+
+                var requestResult = _databaseExecutions.ExecuteDeleteQuery("Sp_RolesDeleteById", _parameterList);
+
+                if (requestResult > 0) 
+                {
+                    return new SuccessResponse<string>(Messages.Delete("Kitap"));
+                }
+                else
+                {
+                    return new ErrorResponse<string>(Messages.DeleteError("Kitap"));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse<string>(ex.Message);
+            }
+        }
+
         public IResponse<IEnumerable<Role>> ListAll()
         {
             try
@@ -36,6 +83,24 @@ namespace Katmanli.Service.Services
             catch (Exception ex)
             {
                 return new ErrorResponse<IEnumerable<Role>>(ex.Message);
+            }
+        }
+
+        public IResponse<IEnumerable<UserRole>> ListRolesByUser()
+        {
+            try
+            {
+                _parameterList.Reset();
+
+                var jsonResult = _databaseExecutions.ExecuteQuery("ListUserRolesByUsers", _parameterList);
+
+                var users = JsonConvert.DeserializeObject<List<UserRole>>(jsonResult);
+
+                return new SuccessResponse<IEnumerable<UserRole>>(users);
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse<IEnumerable<UserRole>>(ex.Message);
             }
         }
     }

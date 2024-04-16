@@ -9,9 +9,8 @@ namespace Katmanli.DataAccess.Entities
 {
     public class Author : BaseEntity
     {
-        public string Name { get; set; }
-        public string Surname { get; set; }
-        public string YearOfBirth { get; set; }
-        public List<Book> Books { get; set; }
+        public string? Name { get; set; }
+        public string? Surname { get; set; }
+        public int? YearOfBirth { get; set; }
     }
 }

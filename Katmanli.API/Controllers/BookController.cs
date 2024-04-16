@@ -22,30 +22,71 @@ namespace Katmanli.API.Controllers
         [HttpGet("ListAll")]
         public IActionResult List()
         {
-            var getUsers = _bookService.ListAll();
-            return Ok(getUsers);
+            var response = _bookService.ListAll();
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response);
+        }
+
+        [HttpGet("ListBooksByCategoryId")]
+        public IActionResult ListByCategoryId(int categoryId)
+        {
+            var response = _bookService.ListBooksByCategoryId(categoryId);
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response);
         }
 
         [HttpPost("Create")]
         public IActionResult Create(BookCreate bookCreateModel)
         {
-            var kullaniciOlustur = _bookService.Create(bookCreateModel);
-            return Ok(kullaniciOlustur);
+            var response = _bookService.Create(bookCreateModel);
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
         }
 
 
         [HttpGet("GetBookById")]
         public IActionResult GetBookById(int id)
         {
-            var getUsers = _bookService.FindById(id);
-            return Ok(getUsers);
+            var response = _bookService.FindById(id);
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response);
         }
 
         [HttpDelete("Delete")]
         public IActionResult Delete(int id)
         {
-            var deletedUser = _bookService.Delete(id);
-            return Ok(deletedUser);
+            var response = _bookService.Delete(id);
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response);
+        }
+
+        [HttpPut("Update")]
+        public IActionResult Update()
+        {
+            return null;
         }
     }
 }
