@@ -86,8 +86,8 @@ namespace Katmanli.Service.Services
 
                 if (selectedAuthor.IsNullOrEmpty())
                 {
-                    //böyle bir kitap bulunamadı.
-                    return new ErrorResponse<IEnumerable<AuthorQuery>>(Messages.NotFound("Kitap"));
+                    //böyle bir yazar bulunamadı.
+                    return new ErrorResponse<IEnumerable<AuthorQuery>>(Messages.NotFound("Author"));
                 }
 
                 return new SuccessResponse<IEnumerable<AuthorQuery>>(selectedAuthor);
@@ -120,14 +120,14 @@ namespace Katmanli.Service.Services
         {
             try
             {
-                var parameterList = new ParameterList();
-                parameterList.Add("@AuthorId", model.Id);
-                parameterList.Add("@Name", model.Name);
-                parameterList.Add("@Surname", model.Surname);
-                parameterList.Add("@YearOfBirth", model.YearOfBirth);
-                parameterList.Add("@UpdatedDate", DateTime.Now);
+                _parameterList.Reset();
+                _parameterList.Add("@AuthorId", model.Id);
+                _parameterList.Add("@Name", model.Name);
+                _parameterList.Add("@Surname", model.Surname);
+                _parameterList.Add("@YearOfBirth", model.YearOfBirth);
+                _parameterList.Add("@UpdatedDate", DateTime.Now);
 
-                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_AuthorUpdate", parameterList);
+                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_AuthorUpdate", _parameterList);
 
                 return new SuccessResponse<string>(Messages.Update("Author"));
             }

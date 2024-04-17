@@ -72,9 +72,15 @@ namespace Katmanli.API.Controllers
         }
 
         [HttpPut("Update")]
-        public IActionResult Update()
+        public IActionResult Update(CategoryUpdate categoryUpdateModel)
         {
-            return null;
+            var response = _categoryService.Update(categoryUpdateModel);
+
+            if (response.Success) 
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
         }
     }
 }

@@ -27,22 +27,22 @@ namespace Katmanli.Service.Services
 
         public IResponse<string> Create(CategoryCreate model)
         {
-            try {
-            // Reset parameter list
-            _parameterList.Reset();
+            try
+            {
 
-           _parameterList.Add("@Name",model.Name);
+                _parameterList.Reset();
 
-            var requestResult = _databaseExecutions.ExecuteQuery("Sp_CategoryCreate", _parameterList);
+                _parameterList.Add("@Name", model.Name);
 
-            // Return success response
-            return new SuccessResponse<string>("Category created successfully.");
-        }
+                var requestResult = _databaseExecutions.ExecuteQuery("Sp_CategoryCreate", _parameterList);
+
+                return new SuccessResponse<string>("Category created successfully.");
+            }
             catch (Exception ex)
             {
                 return new ErrorResponse<string>($"Failed to create category: {ex.Message}");
             }
-            }
+        }
 
         public IResponse<string> Delete(int id)
         {
@@ -50,7 +50,7 @@ namespace Katmanli.Service.Services
             {
                 _parameterList.Reset();
 
-                _parameterList.Add("@DeleteById",id);
+                _parameterList.Add("@DeleteById", id);
 
                 var requestResult = _databaseExecutions.ExecuteDeleteQuery("Sp_CategoriesDeleteById", _parameterList);
 
@@ -76,7 +76,7 @@ namespace Katmanli.Service.Services
             {
                 _parameterList.Reset();
 
-                _parameterList.Add("@Id",id);
+                _parameterList.Add("@Id", id);
 
                 var jsonResult = _databaseExecutions.ExecuteQuery("Sp_CategoriesGetById", _parameterList);
 
@@ -98,27 +98,40 @@ namespace Katmanli.Service.Services
 
         public IResponse<IEnumerable<CategoryQuery>> ListAll()
         {
+            try
+            {
+                _parameterList.Reset();
 
-                try
-                {
-                    _parameterList.Reset();
+                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_CategoriesGetAll", _parameterList);
 
-                    var jsonResult = _databaseExecutions.ExecuteQuery("Sp_CategoriesGetAll", _parameterList);
+                var categories = JsonConvert.DeserializeObject<List<CategoryQuery>>(jsonResult);
 
-                    var categories = JsonConvert.DeserializeObject<List<CategoryQuery>>(jsonResult);
+                return new SuccessResponse<IEnumerable<CategoryQuery>>(categories);
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse<IEnumerable<CategoryQuery>>(ex.Message);
+            }
 
-                    return new SuccessResponse<IEnumerable<CategoryQuery>>(categories);
-                }
-                catch (Exception ex)
-                {
-                    return new ErrorResponse<IEnumerable<CategoryQuery>>(ex.Message);
-                }
-     
         }
-
-        public IResponse<CategoryDTO.CategoryQuery> Update(CategoryDTO.CategoryUpdate model)
+        public IResponse<string> Update(CategoryUpdate model)
         {
-            throw new NotImplementedException();
+            try 
+            {
+                _parameterList.Reset();
+
+                _parameterList.Add("@CategoryId", model.Id);
+                _parameterList.Add("@CategoryName",model.Name);
+                _parameterList.Add("@UpdatedDate", DateTime.Now);
+
+                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_CategoryUpdate", _parameterList);
+
+                return new SuccessResponse<string>(Messages.Update("Category"));
+            }
+            catch(Exception ex) 
+            {
+                return new ErrorResponse<string>(ex.Message);
+            }
         }
     }
 }

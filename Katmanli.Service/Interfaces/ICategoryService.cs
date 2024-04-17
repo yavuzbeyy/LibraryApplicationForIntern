@@ -12,7 +12,7 @@ namespace Katmanli.Service.Interfaces
     {
         IResponse<IEnumerable<CategoryQuery>> ListAll();
         IResponse<IEnumerable<CategoryQuery>> FindById(int id);
-        IResponse<CategoryQuery> Update(CategoryUpdate model);
+        IResponse<string> Update(CategoryUpdate model);
         IResponse<string> Create(CategoryCreate model);
         IResponse<string> Delete(int id);
     }
