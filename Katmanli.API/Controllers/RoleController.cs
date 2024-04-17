@@ -54,13 +54,7 @@ namespace Katmanli.API.Controllers
             {
                 return Ok(response);
             }
-
             return BadRequest(response);
-        }
-        [HttpPut("Update")]
-        public IActionResult Update()
-        {
-            return null;
         }
     }
 }

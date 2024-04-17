@@ -31,7 +31,7 @@ namespace Katmanli.Service.Services
             // Reset parameter list
             _parameterList.Reset();
 
-           _parameterList.Add(new Parameter { Name = "@Name", Value = model.Name });
+           _parameterList.Add("@Name",model.Name);
 
             var requestResult = _databaseExecutions.ExecuteQuery("Sp_CategoryCreate", _parameterList);
 
@@ -48,12 +48,9 @@ namespace Katmanli.Service.Services
         {
             try
             {
-                Parameter parameter = new Parameter();
                 _parameterList.Reset();
 
-                parameter.Name = "@DeleteById";
-                parameter.Value = id;
-                _parameterList.Add(parameter);
+                _parameterList.Add("@DeleteById",id);
 
                 var requestResult = _databaseExecutions.ExecuteDeleteQuery("Sp_CategoriesDeleteById", _parameterList);
 
@@ -77,11 +74,9 @@ namespace Katmanli.Service.Services
         {
             try
             {
-                Parameter parameter = new Parameter();
+                _parameterList.Reset();
 
-                parameter.Name = "@Id";
-                parameter.Value = id;
-                _parameterList.Add(parameter);
+                _parameterList.Add("@Id",id);
 
                 var jsonResult = _databaseExecutions.ExecuteQuery("Sp_CategoriesGetById", _parameterList);
 

@@ -33,18 +33,17 @@ namespace Katmanli.Service.Services
                 // Reset parameter list
                 _parameterList.Reset();
 
-                // Add parameters for the stored procedure
-                _parameterList.Add(new Parameter { Name = "@Title", Value = model.Title });
-                _parameterList.Add(new Parameter { Name = "@PublicationYear", Value = model.PublicationYear });
-                _parameterList.Add(new Parameter { Name = "@NumberOfPages", Value = model.NumberOfPages });
-                _parameterList.Add(new Parameter { Name = "@IsAvailable", Value = model.isAvailable });
-                _parameterList.Add(new Parameter { Name = "@AuthorId", Value = model.AuthorId });
-                _parameterList.Add(new Parameter { Name = "@CategoryId", Value = model.CategoryId });
 
-                // Execute the stored procedure with the parameter list
+                _parameterList.Add("@Title", model.Title );
+                _parameterList.Add("@PublicationYear", model.PublicationYear);
+                _parameterList.Add("@NumberOfPages" ,model.NumberOfPages);
+                _parameterList.Add("@IsAvailable", model.isAvailable);
+                _parameterList.Add("@AuthorId",model.AuthorId);
+                _parameterList.Add("@CategoryId",model.CategoryId);
+
+
                 var requestResult = _databaseExecutions.ExecuteQuery("Sp_BookCreate", _parameterList);
 
-                // Return success response
                 return new SuccessResponse<string>("Book created successfully.");
             }
             catch (Exception ex)
@@ -58,12 +57,10 @@ namespace Katmanli.Service.Services
         {
             try
             {
-                Parameter parameter = new Parameter();
+
                 _parameterList.Reset();
 
-                parameter.Name = "@DeleteById";
-                parameter.Value = id;
-                _parameterList.Add(parameter);
+                _parameterList.Add("@DeleteById", id);
 
                 var requestResult = _databaseExecutions.ExecuteDeleteQuery("Sp_BooksDeleteById", _parameterList);
 
@@ -87,11 +84,8 @@ namespace Katmanli.Service.Services
         {
             try
             {
-                Parameter parameter = new Parameter();
 
-                parameter.Name = "@Id";
-                parameter.Value = id;
-                _parameterList.Add(parameter);
+                _parameterList.Add("@Id",id);
 
                 var jsonResult = _databaseExecutions.ExecuteQuery("Sp_BooksGetById", _parameterList);
 
@@ -134,11 +128,8 @@ namespace Katmanli.Service.Services
             try
             {
                 _parameterList.Reset();
-                Parameter parameter = new Parameter();
-                parameter.Name = "@CategoryId";
-                parameter.Value = categoryId;
 
-                _parameterList.Add(parameter);
+                _parameterList.Add("@CategoryId", categoryId);
 
                 var jsonResult = _databaseExecutions.ExecuteQuery("Sp_BooksGetByCategoryId", _parameterList);
 
@@ -152,9 +143,30 @@ namespace Katmanli.Service.Services
             }
         }
 
-        public IResponse<BookQuery> Update(BookUpdate model)
+        public IResponse<string> Update(BookUpdate model)
         {
-            throw new NotImplementedException();
+                try
+                {
+                    var parameterList = new ParameterList();
+                    parameterList.Add("@BookId", model.Id);
+                    parameterList.Add("@Title", model.Title);
+                    parameterList.Add("@PublicationYear", model.PublicationYear);
+                    parameterList.Add("@NumberOfPages", model.NumberOfPages);
+                    parameterList.Add("@IsAvailable", model.isAvailable);
+                    parameterList.Add("@AuthorId", model.AuthorId);
+                    parameterList.Add("@CategoryId", model.CategoryId);
+                    parameterList.Add("@UpdatedDate", DateTime.Now);
+
+                    var jsonResult = _databaseExecutions.ExecuteQuery("Sp_BookUpdate", parameterList);
+
+                    return new SuccessResponse<string>(Messages.Update("Book"));
+                }
+                catch (Exception ex)
+                {
+                    return new ErrorResponse<string>(ex.Message);
+                }
+            }
+
         }
     }
-}
+

@@ -84,9 +84,15 @@ namespace Katmanli.API.Controllers
             return BadRequest(response.Message); 
         }
         [HttpPut("Update")]
-        public IActionResult Update()
+        public IActionResult Update(UserUpdate userUpdateModel)
         {
-            return null;
+            var response = _userService.Update(userUpdateModel);
+
+            if(response.Success)
+            {  
+                return Ok(response);
+            }
+            return BadRequest(response.Message);
         }
     }
 }

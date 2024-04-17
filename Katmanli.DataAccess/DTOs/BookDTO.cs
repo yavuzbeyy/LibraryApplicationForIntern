@@ -25,7 +25,13 @@ namespace Katmanli.DataAccess.DTOs
 
         public class BookUpdate
         {
-
+        public int Id { get; set; }
+        public string? Title { get; set; }
+        public int? PublicationYear { get; set; }
+        public int? NumberOfPages { get; set; }
+        public bool? isAvailable { get; set; }
+        public int? AuthorId { get; set; }
+        public int? CategoryId { get; set; }
         }
 
         public class BookQuery
@@ -35,8 +41,8 @@ namespace Katmanli.DataAccess.DTOs
             public int PublicationYear { get; set; }
             public int NumberOfPages { get; set; }
             public bool isAvailable { get; set; }
-            public string AuthorId { get; set; }
-            public int CategoryId { get; set; }
+          //  public string AuthorId { get; set; }
+          //  public int CategoryId { get; set; }
         }
   
 }

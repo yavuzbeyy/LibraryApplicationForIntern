@@ -84,9 +84,16 @@ namespace Katmanli.API.Controllers
         }
 
         [HttpPut("Update")]
-        public IActionResult Update()
+        public IActionResult Update(BookUpdate bookUpdateModel)
         {
-            return null;
+            var response = _bookService.Update(bookUpdateModel);
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest();
         }
     }
 }

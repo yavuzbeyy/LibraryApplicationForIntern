@@ -31,9 +31,9 @@ namespace Katmanli.Service.Services
                 // Reset parameter list
                 _parameterList.Reset();
 
-                _parameterList.Add(new Parameter { Name = "@Name", Value = model.Name });
-                _parameterList.Add(new Parameter { Name = "@Surname", Value = model.Surname });
-                _parameterList.Add(new Parameter { Name = "@YearOfBirth", Value = model.YearOfBirth });
+                _parameterList.Add("@Name",  model.Name );
+                _parameterList.Add("@Surname", model.Surname );
+                _parameterList.Add("@YearOfBirth",  model.YearOfBirth );
 
                 var requestResult = _databaseExecutions.ExecuteQuery("Sp_AuthorCreate", _parameterList);
 
@@ -51,12 +51,9 @@ namespace Katmanli.Service.Services
         {
             try
             {
-                Parameter parameter = new Parameter();
                 _parameterList.Reset();
 
-                parameter.Name = "@DeleteById";
-                parameter.Value = id;
-                _parameterList.Add(parameter);
+                _parameterList.Add("@DeleteById",id);
 
                 var requestResult = _databaseExecutions.ExecuteDeleteQuery("Sp_AuthorsDeleteById", _parameterList);
 
@@ -80,11 +77,8 @@ namespace Katmanli.Service.Services
         {
             try
             {
-                Parameter parameter = new Parameter();
-
-                parameter.Name = "@Id";
-                parameter.Value = id;
-                _parameterList.Add(parameter);
+                _parameterList.Reset();
+                _parameterList.Add("@Id",id);
 
                 var jsonResult = _databaseExecutions.ExecuteQuery("Sp_AuthorsGetById", _parameterList);
 
@@ -122,9 +116,25 @@ namespace Katmanli.Service.Services
             }
         }
 
-        public IResponse<AuthorQuery> Update(AuthorUpdate model)
+        public IResponse<string> Update(AuthorUpdate model)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var parameterList = new ParameterList();
+                parameterList.Add("@AuthorId", model.Id);
+                parameterList.Add("@Name", model.Name);
+                parameterList.Add("@Surname", model.Surname);
+                parameterList.Add("@YearOfBirth", model.YearOfBirth);
+                parameterList.Add("@UpdatedDate", DateTime.Now);
+
+                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_AuthorUpdate", parameterList);
+
+                return new SuccessResponse<string>(Messages.Update("Author"));
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse<string>(ex.Message);
+            }
         }
     }
 }

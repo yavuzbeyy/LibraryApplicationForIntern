@@ -12,7 +12,7 @@ namespace Katmanli.Service.Interfaces
     {
         IResponse<IEnumerable<AuthorQuery>> ListAll();
         IResponse<IEnumerable<AuthorQuery>> FindById(int id);
-        IResponse<AuthorQuery> Update(AuthorUpdate model);
+        IResponse<string> Update(AuthorUpdate model);
         IResponse<string> Create(AuthorCreate model);
         IResponse<string> Delete(int id);
     }

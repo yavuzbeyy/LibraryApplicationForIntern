@@ -27,7 +27,7 @@ namespace Katmanli.Service.Services
         {
             try { 
             _parameterList.Reset();
-            _parameterList.Add(new Parameter { Name = "@Name", Value = model.RoleName });
+            _parameterList.Add("@Name", model.RoleName);
 
             var requestResult = _databaseExecutions.ExecuteQuery("Sp_RoleCreate", _parameterList);
 
@@ -43,12 +43,9 @@ namespace Katmanli.Service.Services
         {
             try
             {
-                Parameter parameter = new Parameter();
                 _parameterList.Reset();
 
-                parameter.Name = "@DeleteById";
-                parameter.Value = id;
-                _parameterList.Add(parameter);
+                _parameterList.Add("@DeleteById",id);
 
                 var requestResult = _databaseExecutions.ExecuteDeleteQuery("Sp_RolesDeleteById", _parameterList);
 

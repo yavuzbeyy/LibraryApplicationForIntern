@@ -39,20 +39,18 @@ namespace Katmanli.Service.Services
                 //Hashlenmiş Password
                 string hashedPassword = _tokenCreator.GenerateHashedPassword(model.Password);
 
-                // Reset parameter list
                 var parameterList = new ParameterList();
 
-                parameterList.Add(new Parameter { Name = "@Name", Value = model.Name });
-                parameterList.Add(new Parameter { Name = "@Surname", Value = model.Surname });
-                parameterList.Add(new Parameter { Name = "@Username", Value = model.Username });
-                parameterList.Add(new Parameter { Name = "@Email", Value = model.Email });
-                parameterList.Add(new Parameter { Name = "@UpdatedDate", Value = DateTime.Now });
-                parameterList.Add(new Parameter { Name = "@Password", Value = hashedPassword });
-                parameterList.Add(new Parameter { Name = "@RoleId", Value = model.RoleId });
+                parameterList.Add("@Name",  model.Name);
+                parameterList.Add( "@Surname", model.Surname );
+                parameterList.Add("@Username", model.Username );
+                parameterList.Add("@Email",  model.Email );
+                parameterList.Add("@UpdatedDate", DateTime.Now );
+                parameterList.Add("@Password", hashedPassword);
+                parameterList.Add( "@RoleId", model.RoleId );
 
                 string result = _databaseExecutions.ExecuteQuery("Sp_UserCreate", parameterList);
 
-                // Return success response
                 return new SuccessResponse<string>("User created successfully.");
             }
             catch (Exception ex)
@@ -67,11 +65,10 @@ namespace Katmanli.Service.Services
         {
             try
             {
-                Parameter parameter = new Parameter();
+ 
                 _parameterList.Reset();
 
-                parameter.addParameter("@DeleteById", id);
-                _parameterList.Add(parameter);
+                _parameterList.Add("@DeleteById",id);
 
                 var requestResult = _databaseExecutions.ExecuteDeleteQuery("Sp_UsersDeleteById", _parameterList);
 
@@ -95,11 +92,7 @@ namespace Katmanli.Service.Services
         {
             try
             {
-                Parameter parameter = new Parameter();
-
-                parameter.addParameter("@Id", id);
-
-                _parameterList.Add(parameter);
+                _parameterList.Add("@Id",id);
 
                 var jsonResult = _databaseExecutions.ExecuteQuery("Sp_UsersGetById", _parameterList);
 
@@ -123,10 +116,8 @@ namespace Katmanli.Service.Services
         {
             try
             {
-                Parameter parameter = new Parameter();
-                parameter.addParameter("@Username", username);
-
-                _parameterList.Add(parameter);
+                _parameterList.Reset();
+                _parameterList.Add("@Username",username);
 
                 var jsonResult = _databaseExecutions.ExecuteQuery("Sp_UsersGetByUsername", _parameterList);
 
@@ -182,9 +173,25 @@ namespace Katmanli.Service.Services
             return null;
         }
 
-        public IResponse<UserQuery> Update(UserUpdate model)
+        public IResponse<string> Update(UserUpdate model)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var parameterList = new ParameterList();
+                parameterList.Add("@UserId", model.UserId);
+                parameterList.Add("@Name", model.Name);
+                parameterList.Add("@Surname", model.Surname);
+                parameterList.Add("@Email", model.Email);
+                parameterList.Add("@RoleId", model.RoleId);
+
+                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_UsersUpdate", parameterList);
+
+                return new SuccessResponse<string>(Messages.Update("User"));
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse<string>(ex.Message);
+            }
         }
 
     }

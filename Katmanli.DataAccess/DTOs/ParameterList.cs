@@ -19,12 +19,11 @@ namespace Katmanli.DataAccess.DTOs
                 Parameters = new List<Parameter>();
             }
 
-            public void Add(Parameter parameter)
+            public void Add(string name, object value)
             {
-                Parameters.Add(parameter);
+                Parameters.Add(new Parameter() { Name = name, Value = value });
             }
 
-            // Implementation of IEnumerable<Parameter>
             public IEnumerator<Parameter> GetEnumerator()
             {
                 return Parameters.GetEnumerator();
