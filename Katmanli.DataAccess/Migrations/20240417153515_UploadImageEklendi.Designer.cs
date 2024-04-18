@@ -4,6 +4,7 @@ using Katmanli.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Katmanli.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240417153515_UploadImageEklendi")]
+    partial class UploadImageEklendi
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -157,55 +160,21 @@ namespace Katmanli.DataAccess.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2024, 4, 17, 18, 41, 52, 672, DateTimeKind.Local).AddTicks(7183),
+                            CreatedDate = new DateTime(2024, 4, 17, 18, 35, 15, 286, DateTimeKind.Local).AddTicks(3036),
                             RoleName = "Admin"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2024, 4, 17, 18, 41, 52, 672, DateTimeKind.Local).AddTicks(7195),
+                            CreatedDate = new DateTime(2024, 4, 17, 18, 35, 15, 286, DateTimeKind.Local).AddTicks(3049),
                             RoleName = "User"
                         },
                         new
                         {
                             Id = 3,
-                            CreatedDate = new DateTime(2024, 4, 17, 18, 41, 52, 672, DateTimeKind.Local).AddTicks(7196),
+                            CreatedDate = new DateTime(2024, 4, 17, 18, 35, 15, 286, DateTimeKind.Local).AddTicks(3050),
                             RoleName = "Author"
                         });
-                });
-
-            modelBuilder.Entity("Katmanli.DataAccess.Entities.UploadImage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("BookId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FileGuidedName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FileKey")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FileOriginalName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FilePath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UploadImages");
                 });
 
             modelBuilder.Entity("Katmanli.DataAccess.Entities.User", b =>

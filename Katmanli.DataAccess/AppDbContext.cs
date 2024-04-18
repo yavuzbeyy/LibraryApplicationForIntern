@@ -28,6 +28,8 @@ namespace Katmanli.DataAccess
         public DbSet<Book> Books { get; set; }
         public DbSet<BookCategoryAuthor> BookInformations { get; set; }
 
+        public DbSet<UploadImage> UploadImages { get; set; }
+
         // Default olarak Admin ve Kullanıcı rollerini Seed data olarak ata.
 
         private void SeedData(ModelBuilder modelBuilder)

@@ -4,8 +4,6 @@ using Katmanli.Core.SharedLibrary;
 using Katmanli.DataAccess;
 using Katmanli.DataAccess.Connection;
 using Katmanli.DataAccess.DTOs;
-using Katmanli.DataAccess.Entities;
-using Katmanli.DataAccess.Repository;
 using Katmanli.Service.Interfaces;
 using Katmanli.Service.Mapping;
 using Katmanli.Service.Services;
@@ -30,6 +28,7 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<ICategoryService,CategoryService>();
+builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddScoped<DatabaseExecutions, DatabaseExecutions>();
 builder.Services.AddScoped<ParameterList>();
 
