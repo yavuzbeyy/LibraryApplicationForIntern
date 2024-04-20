@@ -1,4 +1,5 @@
-﻿using Katmanli.Core.SharedLibrary;
+﻿using Katmanli.Core.Response;
+using Katmanli.Core.SharedLibrary;
 using Katmanli.Service.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,17 +21,46 @@ namespace Katmanli.API.Controllers
         [HttpGet("GetImageByBookId")]
         [RequestFormLimits(MultipartBodyLengthLimit = 30L * 1024 * 1024)] // 30 MB
         [RequestSizeLimit(30L * 1024 * 1024)] // 30 MB
-        public IActionResult GetFile(int bookId)
+        public async Task<IActionResult> GetFile(int bookId)
         {
             try
             {
-               var response = _uploadService.GetFile(bookId);
+                var file = await _uploadService.GetFile(bookId);
 
-               return Ok(response);
+                if (file == null || file.Data.fileContent == null)
+                {
+                    return BadRequest(new ErrorResponse<string>(Messages.NotFound("dosya")));
+                }
+
+                var fileData = file.Data;
+
+
+                // Dosyanın content-disposition başlığını inline olarak ayarlayın
+                string sanitizedFileName = fileData.fileName
+                .Replace("ğ", "g")
+                .Replace("Ğ", "G")
+                .Replace("ü", "u")
+                .Replace("Ü", "U")
+                .Replace("ş", "s")
+                .Replace("Ş", "S")
+                .Replace("ı", "i")
+                .Replace("İ", "I")
+                .Replace("ö", "o")
+                .Replace("Ö", "O")
+                .Replace("ç", "c")
+                .Replace("Ç", "C")
+                .Replace("\"", "\\\""); // Çift tırnakları kaçış karakteriyle değiştir
+
+                sanitizedFileName = sanitizedFileName.Replace(" ", "_"); // Boşlukları alt çizgiyle değiştir, alternatif olarak kaldırabilirsiniz
+                Response.Headers.Add("Content-Disposition", $"inline; filename=\"{sanitizedFileName}\"");
+
+
+                // Dosya içeriğini döndürün
+                return fileData.fileContent;
             }
             catch (Exception e)
             {
-                return BadRequest(e.StackTrace);
+                return BadRequest(new ErrorResponse<string>(e.StackTrace));
             }
         }
 
@@ -51,6 +81,25 @@ namespace Katmanli.API.Controllers
 
             }
 
+
+        [HttpPost]
+        [Route("UploadToFtp")]
+        public async Task<IActionResult> UploadFileToFtp(IFormFile? imageFile, [FromForm] int bookId)
+        {
+            try
+            {
+                var response = _uploadService.UploadFileToFtpServer(imageFile, bookId);
+
+                return Ok("Yükleme İşlemi Başarılı");
+            }
+            catch (Exception e)
+            {
+                return BadRequest((e.StackTrace));
+            }
         }
     }
+}
+
+
+    
 

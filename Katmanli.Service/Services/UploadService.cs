@@ -1,4 +1,5 @@
 ﻿using Katmanli.Core.Response;
+using Katmanli.Core.SharedLibrary;
 using Katmanli.DataAccess.Connection;
 using Katmanli.DataAccess.DTOs;
 using Katmanli.DataAccess.Entities;
@@ -31,7 +32,7 @@ namespace Katmanli.Service.Services
             _parameterList = parameterList;
         }
 
-        public string UploadFile(IFormFile file, int bookId)
+        public string UploadFileToFtpServer(IFormFile file, int bookId)
         {
             if (file != null && file.Length > 0)
             {
@@ -69,6 +70,43 @@ namespace Katmanli.Service.Services
                 }          
             }
             return null; //DataResult dönülücek.
+        }
+
+        public string UploadFile(IFormFile file, int bookId)
+        {
+            if (file != null && file.Length > 0)
+            {
+                string fileName = Path.GetFileName(file.FileName);
+                string fileExtension = Path.GetExtension(fileName).ToLower();
+                var uploadPath = "C:\\Users\\yavuz\\OneDrive\\Desktop\\VakıfbankStaj\\Kütüphane Uygulaması\\Katmanli.API\\wwwroot\\Uploads";
+                
+                string documentIdentityKey = Guid.NewGuid().ToString();
+                string documentGuidName = documentIdentityKey + fileExtension;
+                string fileType = GetFileType(fileName);
+
+                if (fileType != "Resim")
+                {
+                    throw new Exception(""); //hata döndür
+                }
+
+                var filePath = Path.Combine(uploadPath + "/" + documentGuidName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
+
+                _parameterList.Reset();
+                _parameterList.Add("@FileOriginalName", fileName);
+                _parameterList.Add("@FileGuidedName", documentGuidName);
+                _parameterList.Add("@FileKey", documentIdentityKey);
+                _parameterList.Add("@FilePath", filePath);
+                _parameterList.Add("@BookId", bookId);
+                var requestResult = _databaseExecutions.ExecuteQuery("Sp_UploadImageCreate", _parameterList);
+
+                return null;
+            }
+            return null;
         }
 
 
@@ -123,28 +161,31 @@ namespace Katmanli.Service.Services
             }
         }
 
-        public IFormFile GetFile(int bookId)
+        public async Task<IResponse<(string fileName, FileResult fileContent)>> GetFile(int bookId)
         {
+            string contentType = "image/jpeg";
+            FileResult fileResult;
+
             _parameterList.Reset();
 
-            _parameterList.Add("BookId",bookId);
+            _parameterList.Add("@BookId", bookId);
 
-            var jsonResult = _databaseExecutions.ExecuteQuery("Sp_GetFileGuidedNamesByBookId", _parameterList);
+            var jsonResult = _databaseExecutions.ExecuteQuery("Sp_ImageByBookId", _parameterList);
 
-            var bookImage = JsonConvert.DeserializeObject<IEnumerable<UploadImage>>(jsonResult).FirstOrDefault();
+            var bookImage = JsonConvert.DeserializeObject<List<UploadImage>>(jsonResult);
 
-            if(bookImage != null) 
-            { 
-            var formFile = getImageFromFtpServer(bookImage.FileKey);
-
-                if(formFile != null) 
-                {
-                    return formFile;
-                }
-               
+            if (bookImage == null || !File.Exists(bookImage.First().FilePath))
+            {
+                return new ErrorResponse<(string, FileResult)>(Messages.NotFound("dosya"));
             }
-            return null;
+                      
+            // Diğer dosya türleri için FileContentResult kullan
+            var fileContent = System.IO.File.ReadAllBytes(bookImage.First().FilePath);
+            fileResult = new FileContentResult(fileContent, contentType);
+
+            return new SuccessResponse<(string, FileResult)>((bookImage.First().FileOriginalName, fileResult));
         }
+
 
         private IFormFile getImageFromFtpServer(string guidedImageName)
         {
@@ -191,7 +232,5 @@ namespace Katmanli.Service.Services
                 throw;
             }
         }
-
-
     }
 }

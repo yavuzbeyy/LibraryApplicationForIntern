@@ -111,7 +111,7 @@ namespace Katmanli.Service.Services
             {
                 _parameterList.Reset();
 
-                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_BooksGetAll", _parameterList);
+                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_BooksGetAllWithAuthors", _parameterList);
 
                 var kitaplar = JsonConvert.DeserializeObject<List<BookQuery>>(jsonResult);
 
@@ -132,6 +132,26 @@ namespace Katmanli.Service.Services
                 _parameterList.Add("@CategoryId", categoryId);
 
                 var jsonResult = _databaseExecutions.ExecuteQuery("Sp_BooksGetByCategoryId", _parameterList);
+
+                var books = JsonConvert.DeserializeObject<List<BookQuery>>(jsonResult);
+
+                return new SuccessResponse<IEnumerable<BookQuery>>(books);
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse<IEnumerable<BookQuery>>(ex.Message);
+            }
+        }
+
+        public IResponse<IEnumerable<BookQuery>> ListBooksByAuthorId(int authorId)
+        {
+            try
+            {
+                _parameterList.Reset();
+
+                _parameterList.Add("@AuthorId", authorId);
+
+                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_BooksGetByAuthorId", _parameterList);
 
                 var books = JsonConvert.DeserializeObject<List<BookQuery>>(jsonResult);
 

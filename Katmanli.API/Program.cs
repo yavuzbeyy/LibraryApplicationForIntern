@@ -32,6 +32,16 @@ builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddScoped<DatabaseExecutions, DatabaseExecutions>();
 builder.Services.AddScoped<ParameterList>();
 
+//CORS Hatasý çözümü
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder => builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
+
 //DbContext Ekleme
 var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -46,6 +56,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 

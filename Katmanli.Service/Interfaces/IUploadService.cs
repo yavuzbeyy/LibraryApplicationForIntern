@@ -13,6 +13,9 @@ namespace Katmanli.Service.Interfaces
     {
         string UploadFile(IFormFile file, int bookId);
 
-       IFormFile GetFile(int bookId);
+        //IFormFile GetFile(int bookId);
+        Task<IResponse<(string fileName, FileResult fileContent)>> GetFile(int bookId);
+
+        string UploadFileToFtpServer(IFormFile file, int bookId);
     }
 }

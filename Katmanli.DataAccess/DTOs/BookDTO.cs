@@ -41,8 +41,8 @@ namespace Katmanli.DataAccess.DTOs
             public int PublicationYear { get; set; }
             public int NumberOfPages { get; set; }
             public bool isAvailable { get; set; }
-          //  public string AuthorId { get; set; }
-          //  public int CategoryId { get; set; }
-        }
+        public string? AuthorName { get; set; }
+        public string? AuthorSurname { get; set; }
+    }
   
 }
