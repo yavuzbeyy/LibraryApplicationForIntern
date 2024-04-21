@@ -33,6 +33,7 @@ namespace Katmanli.Service.Services
                 _parameterList.Reset();
 
                 _parameterList.Add("@Name", model.Name);
+                _parameterList.Add("@Description", model.Description);
 
                 var requestResult = _databaseExecutions.ExecuteQuery("Sp_CategoryCreate", _parameterList);
 

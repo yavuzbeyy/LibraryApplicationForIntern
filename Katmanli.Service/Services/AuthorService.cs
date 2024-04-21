@@ -60,11 +60,11 @@ namespace Katmanli.Service.Services
 
                 if (requestResult > 0)
                 {
-                    return new SuccessResponse<string>(Messages.Delete("Kategori"));
+                    return new SuccessResponse<string>(Messages.Delete("Author"));
                 }
                 else
                 {
-                    return new ErrorResponse<string>(Messages.DeleteError("Kategori"));
+                    return new ErrorResponse<string>(Messages.DeleteError("Author"));
                 }
 
             }

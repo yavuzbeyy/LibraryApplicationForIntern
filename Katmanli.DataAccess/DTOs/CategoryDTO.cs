@@ -10,7 +10,9 @@ namespace Katmanli.DataAccess.DTOs
     {
         public class CategoryCreate
         {
-            public string Name { get; set; }
+            public string? Name { get; set; }
+
+            public string? Description { get; set; }
         }
 
         public class CategoryDelete
@@ -22,6 +24,8 @@ namespace Katmanli.DataAccess.DTOs
         {
             public int Id { get; set; }
             public string Name { get; set; }
+
+            public string? Description { get; set; }
         }
 
         public class CategoryQuery
@@ -29,6 +33,7 @@ namespace Katmanli.DataAccess.DTOs
 
             public int Id { get; set; }
             public string Name { get; set; }
+            public string? Description { get; set; }
 
         }
     }
