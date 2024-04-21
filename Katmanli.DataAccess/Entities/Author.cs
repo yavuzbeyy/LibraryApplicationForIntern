@@ -12,5 +12,7 @@ namespace Katmanli.DataAccess.Entities
         public string? Name { get; set; }
         public string? Surname { get; set; }
         public int? YearOfBirth { get; set; }
+        public string? PlaceOfBirth { get; set; }
+        public string? fotoKey { get; set; }
     }
 }
