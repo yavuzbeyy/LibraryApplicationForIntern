@@ -18,14 +18,14 @@ namespace Katmanli.API.Controllers
             }
 
 
-        [HttpGet("GetImageByBookId")]
+        [HttpGet("GetImageByFotokey")]
         [RequestFormLimits(MultipartBodyLengthLimit = 30L * 1024 * 1024)] // 30 MB
         [RequestSizeLimit(30L * 1024 * 1024)] // 30 MB
-        public async Task<IActionResult> GetFile(int bookId)
+        public async Task<IActionResult> GetFile(string filekey)
         {
             try
             {
-                var file = await _uploadService.GetFile(bookId);
+                var file = await _uploadService.GetFile(filekey);
 
                 if (file == null || file.Data.fileContent == null)
                 {
@@ -66,13 +66,13 @@ namespace Katmanli.API.Controllers
 
             [HttpPost]
             [Route("Upload")]
-            public async Task<IActionResult> UploadFile(IFormFile? imageFile, [FromForm] int bookId)
+            public async Task<IActionResult> UploadFile(IFormFile? imageFile)
             {
                 try
                 {
-                    var response = _uploadService.UploadFile(imageFile, bookId);
+                    var response = _uploadService.UploadFile(imageFile);
 
-                    return Ok("Yükleme İşlemi Başarılı");
+                    return Ok(response);
                 }
                 catch (Exception e)
                 {

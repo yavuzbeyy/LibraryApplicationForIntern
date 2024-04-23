@@ -72,7 +72,7 @@ namespace Katmanli.Service.Services
             return null; //DataResult dönülücek.
         }
 
-        public string UploadFile(IFormFile file, int bookId)
+        public string UploadFile(IFormFile file)
         {
             if (file != null && file.Length > 0)
             {
@@ -101,10 +101,10 @@ namespace Katmanli.Service.Services
                 _parameterList.Add("@FileGuidedName", documentGuidName);
                 _parameterList.Add("@FileKey", documentIdentityKey);
                 _parameterList.Add("@FilePath", filePath);
-                _parameterList.Add("@BookId", bookId);
+              //  _parameterList.Add("@BookId", bookId);
                 var requestResult = _databaseExecutions.ExecuteQuery("Sp_UploadImageCreate", _parameterList);
 
-                return null;
+                return documentIdentityKey;
             }
             return null;
         }
@@ -161,14 +161,14 @@ namespace Katmanli.Service.Services
             }
         }
 
-        public async Task<IResponse<(string fileName, FileResult fileContent)>> GetFile(int bookId)
+        public async Task<IResponse<(string fileName, FileResult fileContent)>> GetFile(string filekey)
         {
             string contentType = "image/jpeg";
             FileResult fileResult;
 
             _parameterList.Reset();
 
-            _parameterList.Add("@BookId", bookId);
+            _parameterList.Add("@Filekey", filekey);
 
             var jsonResult = _databaseExecutions.ExecuteQuery("Sp_ImageByBookId", _parameterList);
 

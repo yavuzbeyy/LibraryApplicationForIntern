@@ -40,6 +40,7 @@ namespace Katmanli.Service.Services
                 _parameterList.Add("@IsAvailable", model.isAvailable);
                 _parameterList.Add("@AuthorId",model.AuthorId);
                 _parameterList.Add("@CategoryId",model.CategoryId);
+                _parameterList.Add("@FileKey", model.Filekey);
 
 
                 var requestResult = _databaseExecutions.ExecuteQuery("Sp_BookCreate", _parameterList);

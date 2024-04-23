@@ -11,10 +11,10 @@ namespace Katmanli.Service.Interfaces
 {
     public interface IUploadService
     {
-        string UploadFile(IFormFile file, int bookId);
+        string UploadFile(IFormFile file);
 
         //IFormFile GetFile(int bookId);
-        Task<IResponse<(string fileName, FileResult fileContent)>> GetFile(int bookId);
+        Task<IResponse<(string fileName, FileResult fileContent)>> GetFile(string filekey);
 
         string UploadFileToFtpServer(IFormFile file, int bookId);
     }
