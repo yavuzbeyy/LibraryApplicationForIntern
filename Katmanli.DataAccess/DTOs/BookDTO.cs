@@ -43,6 +43,7 @@ namespace Katmanli.DataAccess.DTOs
             public bool isAvailable { get; set; }
         public string? AuthorName { get; set; }
         public string? AuthorSurname { get; set; }
+        public string? CategoryName { get; set; }
     }
   
 }

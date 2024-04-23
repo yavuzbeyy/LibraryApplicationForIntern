@@ -14,5 +14,6 @@ namespace Katmanli.DataAccess.Entities
         public int? PublicationYear { get; set; }
         public int? NumberOfPages { get; set; }
         public bool? isAvailable { get; set; }
+        public string? FileKey { get; set; }
     }
 }

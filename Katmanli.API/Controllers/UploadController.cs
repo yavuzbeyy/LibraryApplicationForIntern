@@ -64,7 +64,7 @@ namespace Katmanli.API.Controllers
             }
         }
 
-        [HttpPost]
+            [HttpPost]
             [Route("Upload")]
             public async Task<IActionResult> UploadFile(IFormFile? imageFile, [FromForm] int bookId)
             {

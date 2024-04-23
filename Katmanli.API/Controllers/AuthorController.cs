@@ -24,7 +24,7 @@ namespace Katmanli.API.Controllers
 
             if (response.Success)
             {
-                return Ok(response.Message);
+                return Ok(response);
             }
 
             return BadRequest(response.Message);
