@@ -78,7 +78,7 @@ namespace Katmanli.Service.Services
             {
                 string fileName = Path.GetFileName(file.FileName);
                 string fileExtension = Path.GetExtension(fileName).ToLower();
-                var uploadPath = "C:\\Users\\yavuz\\OneDrive\\Desktop\\VakıfbankStaj\\Kütüphane Uygulaması\\Katmanli.API\\wwwroot\\Uploads";
+                var uploadPath = "C:\\Users\\yavuz\\OneDrive\\Desktop\\VakifbankStaj\\Kütüphane Uygulaması\\Katmanli.API\\wwwroot\\Uploads";
                 
                 string documentIdentityKey = Guid.NewGuid().ToString();
                 string documentGuidName = documentIdentityKey + fileExtension;

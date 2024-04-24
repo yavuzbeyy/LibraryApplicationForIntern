@@ -39,7 +39,7 @@ namespace Katmanli.Service.Services
                 var requestResult = _databaseExecutions.ExecuteQuery("Sp_AuthorCreate", _parameterList);
 
                 // Return success response
-                return new SuccessResponse<string>("Author created successfully.");
+                return new SuccessResponse<string>("Yazar başarılı bir şekilde oluşturuldu.");
             }
             catch (Exception ex)
             {
@@ -60,11 +60,11 @@ namespace Katmanli.Service.Services
 
                 if (requestResult > 0)
                 {
-                    return new SuccessResponse<string>(Messages.Delete("Author"));
+                    return new SuccessResponse<string>(Messages.Delete("Yazar"));
                 }
                 else
                 {
-                    return new ErrorResponse<string>(Messages.DeleteError("Author"));
+                    return new ErrorResponse<string>(Messages.DeleteError("Yazar"));
                 }
 
             }
@@ -88,7 +88,7 @@ namespace Katmanli.Service.Services
                 if (selectedAuthor.IsNullOrEmpty())
                 {
                     //böyle bir yazar bulunamadı.
-                    return new ErrorResponse<IEnumerable<AuthorQuery>>(Messages.NotFound("Author"));
+                    return new ErrorResponse<IEnumerable<AuthorQuery>>(Messages.NotFound("Yazar"));
                 }
 
                 return new SuccessResponse<IEnumerable<AuthorQuery>>(selectedAuthor);
@@ -130,7 +130,7 @@ namespace Katmanli.Service.Services
 
                 var jsonResult = _databaseExecutions.ExecuteQuery("Sp_AuthorUpdate", _parameterList);
 
-                return new SuccessResponse<string>(Messages.Update("Author"));
+                return new SuccessResponse<string>(Messages.Update("Yazar"));
             }
             catch (Exception ex)
             {

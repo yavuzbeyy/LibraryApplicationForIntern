@@ -29,24 +29,20 @@ namespace Katmanli.Core.SharedLibrary
         public string GenerateHashedPassword(string password)
         {
             string secretPasswordKey = _configuration.GetValue<string>("AppSettings:PasswordKey");
-            // Convert the secret key to bytes
             byte[] keyBytes = Encoding.UTF8.GetBytes(secretPasswordKey);
 
-            // Create HMACSHA256 instance with the secret key
             using (var hmac = new HMACSHA256(keyBytes))
             {
-                // Compute the hash of the password
                 byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
                 byte[] hashedBytes = hmac.ComputeHash(passwordBytes);
 
-                // Convert the hashed bytes to base64 string
                 return Convert.ToBase64String(hashedBytes);
             }
         }
 
         public string GenerateToken(string username, List<int> roles)
         {
-            string secret = _configuration.GetValue<string>("AppSettings:Secret");
+            string secret = _configuration.GetValue<string>("AppSettings:SecretKey");
             byte[] key = Encoding.UTF8.GetBytes(secret);
 
             SymmetricSecurityKey securityKey = new SymmetricSecurityKey(key);

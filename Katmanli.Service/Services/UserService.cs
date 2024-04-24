@@ -47,11 +47,11 @@ namespace Katmanli.Service.Services
                 parameterList.Add("@Email",  model.Email );
                 parameterList.Add("@UpdatedDate", DateTime.Now );
                 parameterList.Add("@Password", hashedPassword);
-                parameterList.Add( "@RoleId", model.RoleId );
+                parameterList.Add("@RoleId", model.RoleId );
 
                 string result = _databaseExecutions.ExecuteQuery("Sp_UserCreate", parameterList);
 
-                return new SuccessResponse<string>("User created successfully.");
+                return new SuccessResponse<string>("Kullanıcı başarılı bir şekilde kayıt edildi.");
             }
             catch (Exception ex)
             {
@@ -157,20 +157,26 @@ namespace Katmanli.Service.Services
 
         public IResponse<string> Login(UserLoginDto loginModel)
         {
-            //var girisYapanKullanici = _userRepository.Queryable().Where(x => x.Username == loginModel.Username).FirstOrDefault();
+            string hashedPassword = _tokenCreator.GenerateHashedPassword(loginModel.Password);
 
-            //if (girisYapanKullanici != null)
-            //{
-            //    var roles = _userRoleRepository.GetAll().Where(x => x.UserId == girisYapanKullanici.Id).Select(x => x.RoleId).ToList();
+            _parameterList.Reset();
+            _parameterList.Add("@Username", loginModel.Username);
+            _parameterList.Add("@Password", hashedPassword);
 
-            //    string token = _tokenCreator.GenerateToken(loginModel.Username, roles);
+            var jsonResult = _databaseExecutions.ExecuteQuery("Sp_UserLogin", _parameterList);
 
-            //    return new SuccessResponse<string>(token);
-            //}
+            var loginUser = JsonConvert.DeserializeObject<List<UserQuery>>(jsonResult);
 
-            //return new ErrorResponse<string>(Messages.NotFound("Token"));
+            if (loginUser != null && loginUser.Any())
+            {
+                var roles = loginUser.Select(u => u.RoleId).ToList();
+                string token = _tokenCreator.GenerateToken(loginModel.Username, roles);
 
-            return null;
+                return new SuccessResponse<string>(token);
+            }
+
+            return new ErrorResponse<string>(Messages.NotFound("Token"));
+
         }
 
         public IResponse<string> Update(UserUpdate model)

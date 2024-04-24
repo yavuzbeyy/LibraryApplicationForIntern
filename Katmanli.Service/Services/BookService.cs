@@ -45,7 +45,7 @@ namespace Katmanli.Service.Services
 
                 var requestResult = _databaseExecutions.ExecuteQuery("Sp_BookCreate", _parameterList);
 
-                return new SuccessResponse<string>("Book created successfully.");
+                return new SuccessResponse<string>("Kitap başarılı bir şekilde oluşturuldu.");
             }
             catch (Exception ex)
             {

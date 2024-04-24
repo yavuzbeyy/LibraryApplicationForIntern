@@ -65,7 +65,7 @@ namespace Katmanli.API.Controllers
 
             if (response.Success)
             {
-                return Ok(response.Message); 
+                return Ok(response); 
             }
 
             return BadRequest(response.Message); 
@@ -90,6 +90,18 @@ namespace Katmanli.API.Controllers
 
             if(response.Success)
             {  
+                return Ok(response);
+            }
+            return BadRequest(response.Message);
+        }
+
+        [HttpPost("Login")]
+        public IActionResult Login(UserLoginDto userLoginModel)
+        {
+            var response = _userService.Login(userLoginModel);
+
+            if (response.Success)
+            {
                 return Ok(response);
             }
             return BadRequest(response.Message);
