@@ -4,6 +4,7 @@ using Katmanli.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Katmanli.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240425071845_bookDescriptionAdded")]
+    partial class bookDescriptionAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,9 +138,6 @@ namespace Katmanli.DataAccess.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("RequestDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime?>("ReturnDate")
                         .HasColumnType("datetime2");
 
@@ -206,13 +206,13 @@ namespace Katmanli.DataAccess.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2024, 4, 25, 10, 40, 16, 712, DateTimeKind.Local).AddTicks(9865),
+                            CreatedDate = new DateTime(2024, 4, 25, 10, 18, 45, 599, DateTimeKind.Local).AddTicks(3676),
                             RoleName = "Admin"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2024, 4, 25, 10, 40, 16, 712, DateTimeKind.Local).AddTicks(9878),
+                            CreatedDate = new DateTime(2024, 4, 25, 10, 18, 45, 599, DateTimeKind.Local).AddTicks(3691),
                             RoleName = "User"
                         });
                 });

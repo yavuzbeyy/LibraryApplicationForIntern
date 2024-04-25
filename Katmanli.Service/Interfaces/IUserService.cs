@@ -1,5 +1,6 @@
 ﻿using Katmanli.Core.Response;
 using Katmanli.DataAccess.DTOs;
+using Katmanli.DataAccess.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,7 @@ namespace Katmanli.Core.Interfaces.ServiceInterfaces
         IResponse<string> Delete(int id);
         IResponse<string> Login(UserLoginDto loginModel);
         IResponse<IEnumerable<UserQuery>> GetUserByUsername(string username);
+
+        IResponse<IEnumerable<BookRequestQuery>> GetAllRequests();
     }
 }

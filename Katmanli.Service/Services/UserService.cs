@@ -41,13 +41,13 @@ namespace Katmanli.Service.Services
 
                 var parameterList = new ParameterList();
 
-                parameterList.Add("@Name",  model.Name);
-                parameterList.Add( "@Surname", model.Surname );
-                parameterList.Add("@Username", model.Username );
-                parameterList.Add("@Email",  model.Email );
-                parameterList.Add("@UpdatedDate", DateTime.Now );
+                parameterList.Add("@Name", model.Name);
+                parameterList.Add("@Surname", model.Surname);
+                parameterList.Add("@Username", model.Username);
+                parameterList.Add("@Email", model.Email);
+                parameterList.Add("@UpdatedDate", DateTime.Now);
                 parameterList.Add("@Password", hashedPassword);
-                parameterList.Add("@RoleId", model.RoleId );
+                parameterList.Add("@RoleId", model.RoleId);
 
                 string result = _databaseExecutions.ExecuteQuery("Sp_UserCreate", parameterList);
 
@@ -65,10 +65,10 @@ namespace Katmanli.Service.Services
         {
             try
             {
- 
+
                 _parameterList.Reset();
 
-                _parameterList.Add("@DeleteById",id);
+                _parameterList.Add("@DeleteById", id);
 
                 var requestResult = _databaseExecutions.ExecuteDeleteQuery("Sp_UsersDeleteById", _parameterList);
 
@@ -92,7 +92,7 @@ namespace Katmanli.Service.Services
         {
             try
             {
-                _parameterList.Add("@Id",id);
+                _parameterList.Add("@Id", id);
 
                 var jsonResult = _databaseExecutions.ExecuteQuery("Sp_UsersGetById", _parameterList);
 
@@ -112,12 +112,30 @@ namespace Katmanli.Service.Services
 
         }
 
+        public IResponse<IEnumerable<BookRequestQuery>> GetAllRequests()
+        {
+            try
+            {
+                _parameterList.Reset();
+
+                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_BookRequestsGetAll", _parameterList);
+
+                var bookRequests = JsonConvert.DeserializeObject<List<BookRequestQuery>>(jsonResult);
+
+                return new SuccessResponse<IEnumerable<BookRequestQuery>>(bookRequests);
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse<IEnumerable<BookRequestQuery>>(ex.Message);
+            }
+        }
+
         public IResponse<IEnumerable<UserQuery>> GetUserByUsername(string username)
         {
             try
             {
                 _parameterList.Reset();
-                _parameterList.Add("@Username",username);
+                _parameterList.Add("@Username", username);
 
                 var jsonResult = _databaseExecutions.ExecuteQuery("Sp_UsersGetByUsername", _parameterList);
 
@@ -174,11 +192,8 @@ namespace Katmanli.Service.Services
 
                 return new SuccessResponse<string>(token);
             }
-
             return new ErrorResponse<string>(Messages.NotFound("Token"));
-
         }
-
         public IResponse<string> Update(UserUpdate model)
         {
             try

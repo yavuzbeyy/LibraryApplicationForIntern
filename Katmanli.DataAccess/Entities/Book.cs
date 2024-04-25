@@ -11,6 +11,7 @@ namespace Katmanli.DataAccess.Entities
     public class Book : BaseEntity
     {
         public string? Title { get; set; }
+        public string? Description { get; set; }
         public int? PublicationYear { get; set; }
         public int? NumberOfPages { get; set; }
         public bool? isAvailable { get; set; }

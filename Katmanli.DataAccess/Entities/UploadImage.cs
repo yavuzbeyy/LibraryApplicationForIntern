@@ -13,6 +13,6 @@ namespace Katmanli.DataAccess.Entities
         public string? FileGuidedName { get; set; }
         public string? FileKey { get; set; }
         public string? FilePath { get; set; }
-        public int? BookId { get; set; }
+        //public int? BookId { get; set; }
     }
 }

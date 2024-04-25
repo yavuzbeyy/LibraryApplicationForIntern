@@ -30,6 +30,8 @@ namespace Katmanli.DataAccess
 
         public DbSet<UploadImage> UploadImages { get; set; }
 
+        public DbSet<BookRequest> BookRequests { get; set; }
+
         // Default olarak Admin ve Kullanıcı rollerini Seed data olarak ata.
 
         private void SeedData(ModelBuilder modelBuilder)
@@ -46,13 +48,7 @@ namespace Katmanli.DataAccess
                     Id = 2,
                     RoleName = "User",
                     CreatedDate = DateTime.Now,
-                },
-                 new Role
-                 {
-                     Id = 3,
-                     RoleName = "Author",
-                     CreatedDate = DateTime.Now,
-                 }
+                }
             );
         }
     }

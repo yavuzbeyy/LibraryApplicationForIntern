@@ -123,11 +123,12 @@ namespace Katmanli.Service.Services
 
                 _parameterList.Add("@CategoryId", model.Id);
                 _parameterList.Add("@CategoryName",model.Name);
+                _parameterList.Add("@Description", model.Description);
                 _parameterList.Add("@UpdatedDate", DateTime.Now);
 
                 var jsonResult = _databaseExecutions.ExecuteQuery("Sp_CategoryUpdate", _parameterList);
 
-                return new SuccessResponse<string>(Messages.Update("Category"));
+                return new SuccessResponse<string>(Messages.Update("Kategori"));
             }
             catch(Exception ex) 
             {

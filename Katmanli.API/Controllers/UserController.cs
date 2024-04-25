@@ -106,5 +106,17 @@ namespace Katmanli.API.Controllers
             }
             return BadRequest(response.Message);
         }
+
+        [HttpGet("GetAllRequests")]
+        public IActionResult GetAllRequests()
+        {
+            var response = _userService.GetAllRequests();
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response.Message);
+        }
     }
 }

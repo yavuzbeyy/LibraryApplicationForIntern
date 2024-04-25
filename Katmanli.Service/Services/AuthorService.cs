@@ -126,6 +126,7 @@ namespace Katmanli.Service.Services
                 _parameterList.Add("@Name", model.Name);
                 _parameterList.Add("@Surname", model.Surname);
                 _parameterList.Add("@YearOfBirth", model.YearOfBirth);
+                _parameterList.Add("@PlaceOfBirth", model.PlaceOfBirth);
                 _parameterList.Add("@UpdatedDate", DateTime.Now);
 
                 var jsonResult = _databaseExecutions.ExecuteQuery("Sp_AuthorUpdate", _parameterList);
