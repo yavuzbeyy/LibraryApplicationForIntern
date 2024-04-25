@@ -13,7 +13,7 @@ namespace Katmanli.Core.SharedLibrary
 {
     public interface ITokenCreator
     {
-        string GenerateToken(string username, List<int> roles);
+        string GenerateToken(string username, int userid,List<int> roles);
         string GenerateHashedPassword(string password);
     }
 
@@ -40,7 +40,7 @@ namespace Katmanli.Core.SharedLibrary
             }
         }
 
-        public string GenerateToken(string username, List<int> roles)
+        public string GenerateToken(string username, int userid,List<int> roles)
         {
             string secret = _configuration.GetValue<string>("AppSettings:SecretKey");
             byte[] key = Encoding.UTF8.GetBytes(secret);
@@ -51,7 +51,7 @@ namespace Katmanli.Core.SharedLibrary
             List<Claim> claims = new List<Claim>();
             claims.Add(new Claim("username", username));
             claims.Add(new Claim(ClaimTypes.Name, username));
-          //claims.Add(new Claim("UserId", userid.ToString())); // userid'yi ekleyin
+            claims.Add(new Claim("userId", userid.ToString())); 
 
             foreach (var role in roles)
             {

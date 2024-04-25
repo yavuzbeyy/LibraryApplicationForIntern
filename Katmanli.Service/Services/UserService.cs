@@ -59,7 +59,29 @@ namespace Katmanli.Service.Services
             }
         }
 
+        public IResponse<string> CreateBookRequest(BookRequestCreateDto model)
+        {
+            try
+            {
 
+                var parameterList = new ParameterList();
+
+                parameterList.Add("@RequestDate", model.CreatedDate);
+                parameterList.Add("@BookId", model.BookId);
+                parameterList.Add("@UserId", model.UserId);
+                parameterList.Add("@ReturnDate", model.ReturnDate);
+                parameterList.Add("@isApproved", false);
+                //değerlendirildi mi eklenecek
+
+                string result = _databaseExecutions.ExecuteQuery("Sp_CreateBookRequest", parameterList);
+
+                return new SuccessResponse<string>("Kitap isteği başarılı bir şekilde oluşturuldu.");
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse<string>($"Failed to create book request: {ex.Message}");
+            }
+        }
 
         public IResponse<string> Delete(int id)
         {
@@ -188,7 +210,7 @@ namespace Katmanli.Service.Services
             if (loginUser != null && loginUser.Any())
             {
                 var roles = loginUser.Select(u => u.RoleId).ToList();
-                string token = _tokenCreator.GenerateToken(loginModel.Username, roles);
+                string token = _tokenCreator.GenerateToken(loginModel.Username,loginUser.First().Id, roles);
 
                 return new SuccessResponse<string>(token);
             }

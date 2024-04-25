@@ -118,5 +118,17 @@ namespace Katmanli.API.Controllers
             }
             return BadRequest(response.Message);
         }
+
+        [HttpPost("CreateBookRequest")]
+        public IActionResult CreateBookRequest(BookRequestCreateDto bookRequest)
+        {
+            var response = _userService.CreateBookRequest(bookRequest);
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response.Message);
+        }
     }
 }
