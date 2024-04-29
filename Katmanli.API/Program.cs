@@ -8,6 +8,8 @@ using Katmanli.Service.Interfaces;
 using Katmanli.Service.Mapping;
 using Katmanli.Service.Services;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +20,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Host.UseSerilog(Katmanli.Core.SharedLibrary.Logging.ConfigureLogging);
 
 
 
@@ -52,6 +56,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddSignalR();
+
 
 var app = builder.Build();
 
