@@ -71,6 +71,19 @@ namespace Katmanli.API.Controllers
             return BadRequest(response.Message); 
         }
 
+        [HttpDelete("DeleteBookRequest")]
+        public IActionResult DeleteBookRequest(int id)
+        {
+            var response = _userService.DeleteBookRequest(id);
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response);
+        }
+
         [HttpDelete("Delete")]
         public IActionResult Delete(int id)
         {

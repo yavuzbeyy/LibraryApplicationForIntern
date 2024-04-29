@@ -19,5 +19,7 @@ namespace Katmanli.Service.Interfaces
         IResponse<string> Update(BookUpdate model);
         IResponse<string> Create(BookCreate model);
         IResponse<string> Delete(int id);
+
+        IResponse<string> UpdateIsAvailable(BookUpdate model);
     }
 }

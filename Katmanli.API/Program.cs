@@ -9,6 +9,7 @@ using Katmanli.Service.Mapping;
 using Katmanli.Service.Services;
 using Microsoft.EntityFrameworkCore;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -17,6 +18,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
 
 // AutoMapper konfigürasyonu
 builder.Services.AddAutoMapper(typeof(MapProfile));
@@ -31,6 +34,7 @@ builder.Services.AddScoped<ICategoryService,CategoryService>();
 builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddScoped<DatabaseExecutions, DatabaseExecutions>();
 builder.Services.AddScoped<ParameterList>();
+builder.Services.AddScoped<MainHub,MainHub>();
 
 //CORS Hatasý çözümü
 builder.Services.AddCors(options =>
@@ -47,6 +51,8 @@ var connectionString = builder.Configuration.GetConnectionString("DatabaseConnec
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 
@@ -57,6 +63,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseCors("AllowAll");
+
+app.UseRouting();
+
+app.MapHub<MainHub>("/connectServerHub");
 
 app.UseHttpsRedirection();
 

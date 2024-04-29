@@ -71,7 +71,7 @@ namespace Katmanli.DataAccess.Connection
 
         public int ExecuteDeleteQuery(string storedProcedureName, ParameterList parameters)
         {
-            List<Dictionary<string, object>> results = new List<Dictionary<string, object>>();
+          //  List<Dictionary<string, object>> results = new List<Dictionary<string, object>>();
 
             using (SqlConnection sqlConnection = new SqlConnection(_connectionString))
             {

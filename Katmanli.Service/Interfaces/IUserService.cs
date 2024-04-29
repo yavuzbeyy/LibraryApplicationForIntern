@@ -17,6 +17,7 @@ namespace Katmanli.Core.Interfaces.ServiceInterfaces
         IResponse<string> Create(UserCreate model);
         IResponse<string> CreateBookRequest(BookRequestCreateDto model);
         IResponse<string> Delete(int id);
+        IResponse<string> DeleteBookRequest(int id);
         IResponse<string> Login(UserLoginDto loginModel);
         IResponse<IEnumerable<UserQuery>> GetUserByUsername(string username);
 

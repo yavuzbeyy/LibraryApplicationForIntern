@@ -110,5 +110,18 @@ namespace Katmanli.API.Controllers
 
             return BadRequest();
         }
+
+        [HttpPut("UpdateBookIsAvailable")]
+        public IActionResult UpdateBookIsAvailable(BookUpdate bookUpdateModel)
+        {
+            var response = _bookService.UpdateIsAvailable(bookUpdateModel);
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest();
+        }
     }
 }

@@ -188,6 +188,24 @@ namespace Katmanli.Service.Services
                 }
             }
 
+        public IResponse<string> UpdateIsAvailable(BookUpdate model)
+        {
+            try
+            {
+                var parameterList = new ParameterList();
+                parameterList.Add("@BookId", model.Id);
+                parameterList.Add("@IsAvailable", model.isAvailable);
+  
+                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_BookUpdateIsAvailable", parameterList);
+
+                return new SuccessResponse<string>(Messages.Update("Book"));
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse<string>(ex.Message);
+            }
         }
+
+    }
     }
 

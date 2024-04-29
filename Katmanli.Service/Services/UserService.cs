@@ -63,7 +63,6 @@ namespace Katmanli.Service.Services
         {
             try
             {
-
                 var parameterList = new ParameterList();
 
                 parameterList.Add("@RequestDate", model.CreatedDate);
@@ -109,6 +108,32 @@ namespace Katmanli.Service.Services
                 return new ErrorResponse<string>(ex.Message);
             }
         }
+
+        public IResponse<string> DeleteBookRequest(int id)
+        {
+            try
+            {
+                _parameterList.Reset();
+                _parameterList.Add("@DeleteById", id);
+
+                var requestResult = _databaseExecutions.ExecuteDeleteQuery("Sp_RequestDeleteById", _parameterList);
+
+                //if (requestResult > 0 )
+                //{}
+                return new SuccessResponse<string>("Kitap isteği başarıyla silindi");
+
+                //else
+                //{
+                //    return new ErrorResponse<string>("Belirtilen id ile eşleşen bir kitap isteği bulunamadı");
+                //}
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse<string>(ex.Message);
+            }
+        }
+
+
 
         public IResponse<IEnumerable<UserQuery>> FindById(int id)
         {

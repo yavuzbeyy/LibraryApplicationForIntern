@@ -32,6 +32,8 @@ namespace Katmanli.DataAccess
 
         public DbSet<BookRequest> BookRequests { get; set; }
 
+        public DbSet<UserMessages> UserMessages { get; set; }
+
         // Default olarak Admin ve Kullanıcı rollerini Seed data olarak ata.
 
         private void SeedData(ModelBuilder modelBuilder)
