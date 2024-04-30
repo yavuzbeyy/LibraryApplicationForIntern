@@ -39,6 +39,7 @@ builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddScoped<DatabaseExecutions, DatabaseExecutions>();
 builder.Services.AddScoped<ParameterList>();
 builder.Services.AddScoped<MainHub,MainHub>();
+builder.Services.AddScoped<MailServer, MailServer>();
 
 //CORS Hatasý çözümü
 builder.Services.AddCors(options =>
@@ -57,6 +58,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddSignalR();
 
+MailServer.fillMailInformations();
 
 var app = builder.Build();
 
