@@ -9,11 +9,9 @@ namespace Katmanli.Service.Services
 {
     public class MailServer
     {
-        public static void fillMailInformations()
+        public static void fillMailInformations(string mailAdress,string password)
         {
-            string mailstatus = SendEmail("b200109031@subu.edu.tr", "Testmail", "Hey i have setup my own SMTP server.Let us check it out!!!");
-            Console.WriteLine(mailstatus);
-            Console.ReadKey();
+            string mailstatus = SendEmail(mailAdress, $"Şifre Hatırlatma Servisi", $"Şifrenizi unuttuğunuz için üzgünüz ama endişelenmeyin size hatırlatmak için burdayız :) Şifreniz: {password}");
         }
         public static string SendEmail(string toAddress, string subject, string body)
         {

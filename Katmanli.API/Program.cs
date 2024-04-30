@@ -58,8 +58,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddSignalR();
 
-MailServer.fillMailInformations();
-
 var app = builder.Build();
 
 

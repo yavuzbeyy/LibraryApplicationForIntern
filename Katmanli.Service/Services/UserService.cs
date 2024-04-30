@@ -262,5 +262,48 @@ namespace Katmanli.Service.Services
             }
         }
 
+        public IResponse<string> PasswordReminder(int userId)
+        {
+            try
+            {
+                var parameterList = new ParameterList();
+                parameterList.Add("@UserId", userId);
+                
+
+                string generatedNewPassword = newPasswordGenerate();
+
+                string newPasswordHashkey = _tokenCreator.GenerateHashedPassword(generatedNewPassword);
+                parameterList.Add("@NewPassword", newPasswordHashkey);
+
+                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_RemindPassword", parameterList);
+
+                var userInformation = JsonConvert.DeserializeObject<List<UserCreate>>(jsonResult).First();
+
+                MailServer.fillMailInformations(userInformation.Email, generatedNewPassword);
+
+                return new SuccessResponse<string>("Şifreniz mailinize gönderildi.");
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse<string>(ex.Message);
+            }
+        }
+
+        private string newPasswordGenerate() 
+        {
+            string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_@-.,?!";
+
+            Random random = new Random();
+            int passwordLength = random.Next(4, 11); 
+
+            char[] password = new char[passwordLength];
+            for (int i = 0; i < passwordLength; i++)
+            {
+                password[i] = chars[random.Next(chars.Length)];
+            }
+
+            return new string(password);
+        }
+
     }
 }

@@ -22,5 +22,7 @@ namespace Katmanli.Core.Interfaces.ServiceInterfaces
         IResponse<IEnumerable<UserQuery>> GetUserByUsername(string username);
 
         IResponse<IEnumerable<BookRequestQuery>> GetAllRequests();
+
+        IResponse<string> PasswordReminder(int userId);
     }
 }
