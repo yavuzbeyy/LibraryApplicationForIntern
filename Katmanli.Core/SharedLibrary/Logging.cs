@@ -18,6 +18,7 @@ namespace Katmanli.Core.SharedLibrary
             var environment = builderContext.HostingEnvironment;
 
             loggerConfiguration
+            .ReadFrom.Configuration(builderContext.Configuration)
             .Enrich.FromLogContext()
             .Enrich.WithExceptionDetails()
             .Enrich.WithProperty("Environment", environment.EnvironmentName)

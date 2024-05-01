@@ -33,9 +33,9 @@ namespace Katmanli.Service.Services
                 // Reset parameter list
                 _parameterList.Reset();
 
-
                 _parameterList.Add("@Title", model.Title );
                 _parameterList.Add("@PublicationYear", model.PublicationYear);
+                _parameterList.Add("@Description", model.Description);
                 _parameterList.Add("@NumberOfPages" ,model.NumberOfPages);
                 _parameterList.Add("@IsAvailable", model.isAvailable);
                 _parameterList.Add("@AuthorId",model.AuthorId);
@@ -171,7 +171,8 @@ namespace Katmanli.Service.Services
                     var parameterList = new ParameterList();
                     parameterList.Add("@BookId", model.Id);
                     parameterList.Add("@Title", model.Title);
-                    parameterList.Add("@PublicationYear", model.PublicationYear);
+                    parameterList.Add("@Description", model.Description);
+                     parameterList.Add("@PublicationYear", model.PublicationYear);
                     parameterList.Add("@NumberOfPages", model.NumberOfPages);
                     parameterList.Add("@IsAvailable", model.isAvailable);
                     parameterList.Add("@AuthorId", model.AuthorId);

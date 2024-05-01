@@ -9,9 +9,9 @@ namespace Katmanli.Service.Services
 {
     public class MailServer
     {
-        public static void fillMailInformations(string mailAdress,string password)
+        public static void fillMailInformations(string mailAdress,string password,string username)
         {
-            string mailstatus = SendEmail(mailAdress, $"Şifre Hatırlatma Servisi", $"Şifrenizi unuttuğunuz için üzgünüz ama endişelenmeyin size hatırlatmak için burdayız :) Şifreniz: {password}");
+            string mailstatus = SendEmail(mailAdress, $"Şifre Sıfırlama Servisi", $"Şifrenizi unuttuğunuz için üzgünüz ama endişelenmeyin sizin için yeniledik :) Şifreniz: {password} , Kullanıcı Adınız :{username}");
         }
         public static string SendEmail(string toAddress, string subject, string body)
         {

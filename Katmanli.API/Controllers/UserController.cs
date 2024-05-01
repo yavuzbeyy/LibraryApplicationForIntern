@@ -145,9 +145,9 @@ namespace Katmanli.API.Controllers
         }
 
         [HttpPost("ForgetPassword")]
-        public IActionResult ForgetPassword(int userId)
+        public IActionResult ForgetPassword(string username)
         {
-            var response = _userService.PasswordReminder(userId);
+            var response = _userService.PasswordReminder(username);
 
             if (response.Success)
             {

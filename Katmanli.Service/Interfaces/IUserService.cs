@@ -20,9 +20,7 @@ namespace Katmanli.Core.Interfaces.ServiceInterfaces
         IResponse<string> DeleteBookRequest(int id);
         IResponse<string> Login(UserLoginDto loginModel);
         IResponse<IEnumerable<UserQuery>> GetUserByUsername(string username);
-
         IResponse<IEnumerable<BookRequestQuery>> GetAllRequests();
-
-        IResponse<string> PasswordReminder(int userId);
+        IResponse<string> PasswordReminder(string username);
     }
 }

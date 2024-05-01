@@ -262,12 +262,12 @@ namespace Katmanli.Service.Services
             }
         }
 
-        public IResponse<string> PasswordReminder(int userId)
+        public IResponse<string> PasswordReminder(string username)
         {
             try
             {
                 var parameterList = new ParameterList();
-                parameterList.Add("@UserId", userId);
+                parameterList.Add("@Username", username);
                 
 
                 string generatedNewPassword = newPasswordGenerate();
@@ -279,7 +279,7 @@ namespace Katmanli.Service.Services
 
                 var userInformation = JsonConvert.DeserializeObject<List<UserCreate>>(jsonResult).First();
 
-                MailServer.fillMailInformations(userInformation.Email, generatedNewPassword);
+                MailServer.fillMailInformations(userInformation.Email, generatedNewPassword,userInformation.Username);
 
                 return new SuccessResponse<string>("Şifreniz mailinize gönderildi.");
             }
