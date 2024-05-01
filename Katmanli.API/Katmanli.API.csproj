@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Logs\" />
     <Folder Include="wwwroot\Logs\" />
     <Folder Include="wwwroot\Uploads\" />
   </ItemGroup>

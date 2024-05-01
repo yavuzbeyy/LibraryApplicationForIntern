@@ -3,6 +3,7 @@ using Katmanli.Service.Interfaces;
 using Katmanli.Service.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace Katmanli.API.Controllers
 {
@@ -21,12 +22,13 @@ namespace Katmanli.API.Controllers
         public IActionResult Create(AuthorCreate authorCreateModel)
         {
             var response = _authorService.Create(authorCreateModel);
-
+            Log.Information("Create method called with {AuthorCreateModel}", authorCreateModel);
             if (response.Success)
             {
+                Log.Information("Create method successfully executed");
                 return Ok(response);
             }
-
+            Log.Error("Create method failed with message: {Message}", response.Message);
             return BadRequest(response.Message);
         }
 

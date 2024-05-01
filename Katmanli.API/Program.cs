@@ -9,6 +9,7 @@ using Katmanli.Service.Mapping;
 using Katmanli.Service.Services;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Serilog.Exceptions;
 
 
 
@@ -22,6 +23,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Host.UseSerilog(Katmanli.Core.SharedLibrary.Logging.ConfigureLogging);
+
+// Serilog yapýlandýrmasý
+//var loggerConfiguration = new LoggerConfiguration()
+//    .ReadFrom.Configuration(builder.Configuration)
+//    .Enrich.FromLogContext()
+//    .Enrich.WithExceptionDetails()
+//    .WriteTo.File("C:\\Users\\yavuz\\OneDrive\\Desktop\\VakifbankStaj\\Kütüphane Uygulamasý\\Katmanli.API\\wwwroot\\Logs\\logLibrary.txt");
+
+//Log.Logger = loggerConfiguration.CreateLogger();
+
 
 
 
@@ -38,8 +49,8 @@ builder.Services.AddScoped<ICategoryService,CategoryService>();
 builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddScoped<DatabaseExecutions, DatabaseExecutions>();
 builder.Services.AddScoped<ParameterList>();
-builder.Services.AddScoped<MainHub,MainHub>();
-builder.Services.AddScoped<MailServer, MailServer>();
+builder.Services.AddScoped<MainHub>();
+builder.Services.AddScoped<MailServer>();
 
 //CORS Hatasý çözümü
 builder.Services.AddCors(options =>
@@ -60,6 +71,8 @@ builder.Services.AddSignalR();
 
 var app = builder.Build();
 
+// Middleware eklenir
+app.UseRequestLoggingMiddleware();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
