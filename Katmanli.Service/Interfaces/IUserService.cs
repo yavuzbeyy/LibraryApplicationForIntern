@@ -22,5 +22,9 @@ namespace Katmanli.Core.Interfaces.ServiceInterfaces
         IResponse<IEnumerable<UserQuery>> GetUserByUsername(string username);
         IResponse<IEnumerable<BookRequestQuery>> GetAllRequests();
         IResponse<string> PasswordReminder(string username);
+        IResponse<string> CreateGroupforMessages(string groupName);
+        IResponse<IEnumerable<UserGroupsWithUsersDTO>> ListAllMessageGroups();
+        IResponse<string> DeleteGroupById(int groupId);
+        IResponse<string> addUserToGroup(string username, int groupId);
     }
 }

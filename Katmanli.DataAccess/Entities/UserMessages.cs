@@ -13,5 +13,8 @@ namespace Katmanli.DataAccess.Entities
         public int? UserId { get; set; }
         public string? Username { get; set; }
         public bool? isAdminMessage { get; set; }
+
+        // grup mesajı ise grupidsi yazılacak, grup null ise bireysel mesajdır null atanacak
+        public string? groupName { get; set; }
     }
 }

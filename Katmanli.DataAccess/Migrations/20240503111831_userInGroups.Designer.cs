@@ -4,6 +4,7 @@ using Katmanli.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Katmanli.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240503111831_userInGroups")]
+    partial class userInGroups
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -206,13 +209,13 @@ namespace Katmanli.DataAccess.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2024, 5, 3, 15, 4, 24, 121, DateTimeKind.Local).AddTicks(3542),
+                            CreatedDate = new DateTime(2024, 5, 3, 14, 18, 31, 743, DateTimeKind.Local).AddTicks(3080),
                             RoleName = "Admin"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2024, 5, 3, 15, 4, 24, 121, DateTimeKind.Local).AddTicks(3559),
+                            CreatedDate = new DateTime(2024, 5, 3, 14, 18, 31, 743, DateTimeKind.Local).AddTicks(3096),
                             RoleName = "User"
                         });
                 });
@@ -353,10 +356,10 @@ namespace Katmanli.DataAccess.Migrations
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("UserMessageGroupsId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("groupName")
+                    b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool?>("isAdminMessage")

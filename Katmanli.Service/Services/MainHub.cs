@@ -35,7 +35,7 @@ namespace Katmanli.Service.Services
             await Clients.Caller.SendAsync("MessageSentFromClient", username + " Kullanicisi Şu Mesajı Gönderdi: " + message);
         }
 
-        public async Task SendChatMessageClientOnly(string message, string username,string isAdminSent)
+        public async Task SendChatMessageClientOnly(string message, string username,string isAdminSent,string? adminSentToHim,bool? isGroupMessage)
         {
             //kullanıcının mesajı Admine İlet
             if(isAdminSent == "2")
@@ -48,7 +48,7 @@ namespace Katmanli.Service.Services
                 await Clients.All.SendAsync("ShowAdminMessageToUser", message);
             }
 
-            addMessageToDatabase(message,username,isAdminSent);
+            addMessageToDatabase(message,username,isAdminSent, adminSentToHim, isGroupMessage);
         }
 
         public async Task GetPreviousMessages(string username)
@@ -65,8 +65,22 @@ namespace Katmanli.Service.Services
             await Clients.Caller.SendAsync("ShowPreviousMessages", messages);
         }
 
+        public async Task GetPreviousMessagesFromGroups(string groupname)
+        {
+            // Reset parameter list
+            _parameterList.Reset();
+            _parameterList.Add("@Groupname", groupname);
+            var dbResult = _databaseExecutions.ExecuteQuery("Sp_GetUserMessagesByGroupname", _parameterList);
 
-        private void addMessageToDatabase(string message, string username,string isAdminSent) 
+            // Deserialize the database result to a list of messages
+            var messages = JsonConvert.DeserializeObject<List<UserMessages>>(dbResult);
+
+            // Send the messages to the client
+            await Clients.Caller.SendAsync("ShowPreviousMessages", messages, "username");
+        }
+
+
+        private void addMessageToDatabase(string message, string username,string isAdminSent,string? adminSentToHim,bool? isGroupMessage) 
         {
             try
             {
@@ -75,14 +89,38 @@ namespace Katmanli.Service.Services
                 _parameterList.Reset();
 
                 _parameterList.Add("@Message", message);
-                _parameterList.Add("@Username", username);
+                
+
                 //isAdminSent 1 ise mesaj admin yollamıştır, 0 ise normal kullanıcı yollamıştır.
                 if (isAdminSent == "1")
                 {
                     _parameterList.Add("@isAdminMessage", true);
+
+                    if (isGroupMessage == true)
+                    {
+                        _parameterList.Add("@Groupname", adminSentToHim);
+                        _parameterList.Add("@Username", username);
+                    }
+                    else 
+                    {
+                        _parameterList.Add("@Username", adminSentToHim);
+                    }
+
+                    
+                    // _parameterList.Add("@AdminSentToHim", adminSentToHim);
                 }
                 else { 
                     _parameterList.Add("@isAdminMessage", false);
+
+                    if (isGroupMessage == true)
+                    {
+                        _parameterList.Add("@Groupname", adminSentToHim);
+                        _parameterList.Add("@Username", username);
+                    }
+                    else
+                    {
+                        _parameterList.Add("@Username", username);
+                    }
                 }
 
                 _databaseExecutions.ExecuteQuery("Sp_MessageCreate", _parameterList);

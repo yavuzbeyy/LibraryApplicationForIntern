@@ -155,5 +155,57 @@ namespace Katmanli.API.Controllers
             }
             return BadRequest(response.Message);
         }
+
+
+        [HttpPost("CreateUserGroup")]
+        public IActionResult CreateUserGroup(string groupName)
+        {
+            var response = _userService.CreateGroupforMessages(groupName);
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response.Message);
+        }
+
+        [HttpGet("GetAllGroups")]
+        public IActionResult GetAllGroups()
+        {
+            var response = _userService.ListAllMessageGroups();
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response.Message);
+        }
+
+        [HttpDelete("DeleteGroupById")]
+        public IActionResult DeleteGroupById(int groupId)
+        {
+            var response = _userService.DeleteGroupById(groupId);
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response.Message);
+        }
+
+        [HttpPost("AddUserToGroup")]
+        public IActionResult AddUserToGroup(string username,int groupId)
+        {
+            var response = _userService.addUserToGroup(username,groupId);
+
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response.Message);
+        }
     }
 }

@@ -305,5 +305,86 @@ namespace Katmanli.Service.Services
             return new string(password);
         }
 
+        public IResponse<string> CreateGroupforMessages(string groupName)
+        {
+            try
+            {
+                var parameterList = new ParameterList();
+
+                parameterList.Add("@Name", groupName);
+
+                string result = _databaseExecutions.ExecuteQuery("Sp_CreateGroupforMessages", parameterList);
+
+                return new SuccessResponse<string>("Grup başarılı bir şekilde oluşturuldu.");
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse<string>($"Failed to create group: {ex.Message}");
+            }
+        }
+
+        public IResponse<IEnumerable<UserGroupsWithUsersDTO>> ListAllMessageGroups()
+        {
+            try
+            {
+                _parameterList.Reset();
+
+                var jsonResult = _databaseExecutions.ExecuteQuery("Sp_GroupsGetAllByDetails", _parameterList);
+
+                var groups = JsonConvert.DeserializeObject<List<UserGroupsWithUsersDTO>>(jsonResult);
+
+                return new SuccessResponse<IEnumerable<UserGroupsWithUsersDTO>>(groups);
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse<IEnumerable<UserGroupsWithUsersDTO>>(ex.Message);
+            }
+        }
+
+        public IResponse<string> DeleteGroupById(int groupId)
+        {
+            try
+            {
+
+                _parameterList.Reset();
+
+                _parameterList.Add("@GroupId", groupId);
+
+                var requestResult = _databaseExecutions.ExecuteDeleteQuery("Sp_GroupsDeleteById", _parameterList);
+
+                if (requestResult > 0)
+                {
+                    return new SuccessResponse<string>(Messages.Delete("Grup"));
+                }
+                else
+                {
+                    return new ErrorResponse<string>(Messages.DeleteError("Grup"));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse<string>(ex.Message);
+            }
+        }
+
+        public IResponse<string> addUserToGroup(string username,int groupId)
+        {
+            try
+            {
+                var parameterList = new ParameterList();
+
+                parameterList.Add("@Username", username);
+                parameterList.Add("@GroupId", groupId);
+
+                string result = _databaseExecutions.ExecuteQuery("Sp_AddUserToGroup", parameterList);
+
+                return new SuccessResponse<string>("Grup başarılı bir şekilde oluşturuldu.");
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse<string>($"Failed to create group: {ex.Message}");
+            }
+        }
     }
 }

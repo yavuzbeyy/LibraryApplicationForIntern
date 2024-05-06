@@ -34,6 +34,10 @@ namespace Katmanli.DataAccess
 
         public DbSet<UserMessages> UserMessages { get; set; }
 
+        public DbSet<UserMessageGroups> UserGroups { get; set; }
+
+        public DbSet<UserInGroups> UserInGroups { get; set; }
+
         // Default olarak Admin ve Kullanıcı rollerini Seed data olarak ata.
 
         private void SeedData(ModelBuilder modelBuilder)
