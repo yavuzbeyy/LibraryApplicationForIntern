@@ -17,6 +17,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using static Katmanli.DataAccess.DTOs.CategoryDTO;
+using StackExchange.Redis;
 
 namespace Katmanli.Service.Services
 {
@@ -24,12 +25,33 @@ namespace Katmanli.Service.Services
     {
         private readonly IConfiguration _configuration;
         private readonly ParameterList _parameterList;
+
         private readonly DatabaseExecutions _databaseExecutions;
+
+        private readonly ConnectionMultiplexer _redisConnection;
+        private readonly IDatabase _redisDatabase;
+
+        string redisConnectionString = "localhost:6379,abortConnect=false";
+
         public UploadService(IConfiguration configuration,DatabaseExecutions databaseExecutions,ParameterList parameterList)
         {
             _configuration = configuration;
             _databaseExecutions = databaseExecutions;
             _parameterList = parameterList;
+
+            //_configuration.GetValue<string>("Redis:ConnectionString");
+            try
+            {
+                _redisConnection = ConnectionMultiplexer.Connect(redisConnectionString);
+                _redisDatabase = _redisConnection.GetDatabase();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Redis connection error: " + ex.Message);
+                throw;
+            }
+
         }
 
         public string UploadFileToFtpServer(IFormFile file, int bookId)
@@ -184,6 +206,34 @@ namespace Katmanli.Service.Services
             fileResult = new FileContentResult(fileContent, contentType);
 
             return new SuccessResponse<(string, FileResult)>((bookImage.First().FileOriginalName, fileResult));
+        }
+
+        public async Task<IResponse<(string fileName, FileResult fileContent)>> GetFileFromRedis(string filekey)
+        {
+            string contentType = "image/jpeg";
+            FileResult fileResult;
+
+
+            // Redis'ten dosya yolunu al
+            string redisFilePath = await _redisDatabase.HashGetAsync("filepaths", filekey);
+
+            // Redis'ten gelen dosya yolu null veya boş ise hata döndür
+            if (string.IsNullOrEmpty(redisFilePath))
+            {
+                return new ErrorResponse<(string, FileResult)>(Messages.NotFound("dosya"));
+            }
+
+            // Redis'ten veriyi al
+            //byte[] fileBytes = await _redisDatabase.StringGetAsync(filekey);
+
+            // Redis'ten gelen dosya yolunu düzgün bir şekilde işleyerek dosyayı oku
+            byte[] fileContent = System.IO.File.ReadAllBytes(redisFilePath);
+
+            // Okunan dosya içeriğini FileResult olarak dön
+            fileResult = new FileContentResult(fileContent, contentType);
+
+            return new SuccessResponse<(string, FileResult)>(("Dosya", fileResult));
+
         }
 
 

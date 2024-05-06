@@ -17,5 +17,7 @@ namespace Katmanli.Service.Interfaces
         Task<IResponse<(string fileName, FileResult fileContent)>> GetFile(string filekey);
 
         string UploadFileToFtpServer(IFormFile file, int bookId);
+
+        Task<IResponse<(string fileName, FileResult fileContent)>> GetFileFromRedis(string filekey);
     }
 }

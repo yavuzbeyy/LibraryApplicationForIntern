@@ -67,6 +67,13 @@ var connectionString = builder.Configuration.GetConnectionString("DatabaseConnec
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+//Redis
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = "localhost:6379"; // Redis baðlantý dizesi
+});
+
+//SignalR
 builder.Services.AddSignalR();
 
 var app = builder.Build();

@@ -97,6 +97,50 @@ namespace Katmanli.API.Controllers
                 return BadRequest((e.StackTrace));
             }
         }
+
+        [HttpGet("GetImageByFotokeyFromRedis")]
+        public async Task<IActionResult> GetFileFromRedis(string filekey)
+        {
+            try
+            {
+                var file = await _uploadService.GetFileFromRedis(filekey);
+
+                if (file == null || file.Data.fileContent == null)
+                {
+                    return BadRequest(new ErrorResponse<string>(Messages.NotFound("dosya")));
+                }
+
+                var fileData = file.Data;
+
+
+                // Dosyanın content-disposition başlığını inline olarak ayarlayın
+                string sanitizedFileName = fileData.fileName
+                .Replace("ğ", "g")
+                .Replace("Ğ", "G")
+                .Replace("ü", "u")
+                .Replace("Ü", "U")
+                .Replace("ş", "s")
+                .Replace("Ş", "S")
+                .Replace("ı", "i")
+                .Replace("İ", "I")
+                .Replace("ö", "o")
+                .Replace("Ö", "O")
+                .Replace("ç", "c")
+                .Replace("Ç", "C")
+                .Replace("\"", "\\\""); // Çift tırnakları kaçış karakteriyle değiştir
+
+                sanitizedFileName = sanitizedFileName.Replace(" ", "_"); // Boşlukları alt çizgiyle değiştir, alternatif olarak kaldırabilirsiniz
+                Response.Headers.Add("Content-Disposition", $"inline; filename=\"{sanitizedFileName}\"");
+
+
+                // Dosya içeriğini döndürün
+                return fileData.fileContent;
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ErrorResponse<string>(e.StackTrace));
+            }
+        }
     }
 }
 
