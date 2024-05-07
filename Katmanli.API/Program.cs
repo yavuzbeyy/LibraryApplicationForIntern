@@ -10,6 +10,7 @@ using Katmanli.Service.Services;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Exceptions;
+using StackExchange.Redis;
 
 
 
@@ -40,6 +41,9 @@ builder.Host.UseSerilog(Katmanli.Core.SharedLibrary.Logging.ConfigureLogging);
 builder.Services.AddAutoMapper(typeof(MapProfile));
 
 //Servis Kayýtlarý
+//builder.Services.AddScoped<RedisServer>();
+builder.Services.AddScoped<IRedisServer, RedisServer>();
+builder.Services.AddScoped<ParameterList>();
 builder.Services.AddScoped<ITokenCreator, TokenCreator>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
@@ -48,9 +52,7 @@ builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<ICategoryService,CategoryService>();
 builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddScoped<DatabaseExecutions, DatabaseExecutions>();
-builder.Services.AddScoped<ParameterList>();
-builder.Services.AddScoped<MainHub>();
-builder.Services.AddScoped<MailServer>();
+
 
 //CORS Hatasý çözümü
 builder.Services.AddCors(options =>
@@ -67,16 +69,25 @@ var connectionString = builder.Configuration.GetConnectionString("DatabaseConnec
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-//Redis
-builder.Services.AddStackExchangeRedisCache(options =>
+
+// Register ConnectionMultiplexer service
+builder.Services.AddSingleton<ConnectionMultiplexer>(provider =>
 {
-    options.Configuration = "localhost:6379"; // Redis baðlantý dizesi
+    var configuration = ConfigurationOptions.Parse("localhost:6379");
+    configuration.AbortOnConnectFail = false; 
+    return ConnectionMultiplexer.Connect(configuration);
 });
 
 //SignalR
 builder.Services.AddSignalR();
 
 var app = builder.Build();
+
+// Redis senkronizasyonunu baþlat
+//var redisServer = app.Services.GetRequiredService<IRedisServer>();
+//var redisInterval = TimeSpan.FromMinutes(1); // Senkronizasyon aralýðý
+//redisServer.StartSyncScheduler(redisInterval);
+
 
 // Middleware eklenir
 app.UseRequestLoggingMiddleware();

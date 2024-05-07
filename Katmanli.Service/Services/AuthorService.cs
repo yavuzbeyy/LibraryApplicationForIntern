@@ -35,6 +35,7 @@ namespace Katmanli.Service.Services
                 _parameterList.Add("@Surname", model.Surname );
                 _parameterList.Add("@YearOfBirth",  model.YearOfBirth );
                 _parameterList.Add("@PlaceOfBirth", model.PlaceOfBirth);
+                _parameterList.Add("@FotoKey", model.fotoKey);
 
                 var requestResult = _databaseExecutions.ExecuteQuery("Sp_AuthorCreate", _parameterList);
 
