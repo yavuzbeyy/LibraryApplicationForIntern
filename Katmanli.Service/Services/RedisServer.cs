@@ -1,16 +1,20 @@
-﻿using Katmanli.Core.Response;
+﻿using Confluent.Kafka;
+using Katmanli.Core.Response;
 using Katmanli.Core.SharedLibrary;
 using Katmanli.DataAccess.Connection;
 using Katmanli.DataAccess.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using StackExchange.Redis;
 
 public interface IRedisServer 
 {
     void StoreFilePath(string filekey, string filePath);
     string GetFilePath(string fileId);
-    public void StartSyncScheduler(TimeSpan interval);
+    void StartSyncScheduler(TimeSpan interval);
+    void SynchronizeRedisWithDbFiles();
+    void SyncWithDb(object state);
 }
 
 public class RedisServer : IRedisServer
@@ -23,7 +27,7 @@ public class RedisServer : IRedisServer
     private readonly ParameterList _parameterList;
 
 
-    public RedisServer(ConnectionMultiplexer redisConnection,ParameterList parameterList,DatabaseExecutions databaseExecutions)
+    public RedisServer(ConnectionMultiplexer redisConnection, ParameterList parameterList, DatabaseExecutions databaseExecutions)
     {
         _redisConnection = ConnectionMultiplexer.Connect(redisConnectionString);
         _redisDatabase = _redisConnection.GetDatabase();
@@ -38,42 +42,47 @@ public class RedisServer : IRedisServer
 
     public string GetFilePath(string filekey)
     {
-        //  böyle olunca çalışıyor ancak redisi belirli zamanla çalıştır.
-
-        //SynchronizeRedisWithDbFiles();
-        //StartSyncScheduler(TimeSpan.FromMinutes(1));
-
         return _redisDatabase.HashGet("filepaths", filekey);
     }
 
     public string DeleteFileFromRedis(string filekey)
     {
+        // silme işlemine çevir
         return _redisDatabase.HashGet("filepaths", filekey);
     }
 
     public void SynchronizeRedisWithDbFiles()
     {
-        var dbFilekeysAndPaths = GetFilesAndFilepathsFromDb();
-        var redisFilekeys = _redisDatabase.HashKeys("filepaths");
-
-        // Veritabanında olmayan dosyaları Redis'ten sil
-        foreach (var redisFilekey in redisFilekeys)
+        try
         {
-            if (!dbFilekeysAndPaths.Any(file => file.FileKey == (string)redisFilekey))
+            var dbFilekeysAndPaths = GetFilesAndFilepathsFromDb();
+            var redisFilekeys = _redisDatabase.HashKeys("filepaths");
+
+            // Veritabanındaki dosyaları Redis'e ekle
+            foreach (var file in dbFilekeysAndPaths)
             {
-                DeleteFileFromRedis((string)redisFilekey);
+                // Redis'te dosya adı zaten varsa, dosyayı tekrar kaydetme
+                if (!_redisDatabase.HashExists("filepaths", file.FileKey))
+                {
+                    StoreFilePath(file.FileKey, file.FilePath);
+                }
+            }
+
+            // Veritabanında olmayan dosyaları Redis'ten sil
+            foreach (var redisFilekey in redisFilekeys)
+            {
+                if (!dbFilekeysAndPaths.Any(file => file.FileKey == (string)redisFilekey))
+                {
+                    DeleteFileFromRedis((string)redisFilekey);
+                }
             }
         }
-
-        // Veritabanındaki dosyaları Redis'e ekle
-        foreach (var file in dbFilekeysAndPaths)
+        catch (Exception ex)
         {
-            // Redis'te dosya adı zaten varsa, dosyayı tekrar kaydetme
-            if (!_redisDatabase.HashExists("filepaths", file.FileKey))
-            {
-                StoreFilePath(file.FileKey, file.FilePath);
-            }
+            Console.WriteLine(ex.ToString());
         }
+
+        //  new System.Threading.Timer(SyncWithDb, null, TimeSpan.Zero, TimeSpan.FromMinutes(5));
     }
 
     private List<UploadImagesDTO> GetFilesAndFilepathsFromDb()
@@ -91,7 +100,7 @@ public class RedisServer : IRedisServer
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
-            return new List<UploadImagesDTO>(); 
+            return new List<UploadImagesDTO>();
         }
     }
 
@@ -100,11 +109,9 @@ public class RedisServer : IRedisServer
         var scheduler = new System.Threading.Timer(SyncWithDb, null, TimeSpan.Zero, interval);
     }
 
-    private void SyncWithDb(object state)
+    public void SyncWithDb(object state)
     {
         SynchronizeRedisWithDbFiles();
     }
-
-
-
+ 
 }

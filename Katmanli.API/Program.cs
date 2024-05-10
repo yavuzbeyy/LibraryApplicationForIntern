@@ -41,9 +41,9 @@ builder.Host.UseSerilog(Katmanli.Core.SharedLibrary.Logging.ConfigureLogging);
 builder.Services.AddAutoMapper(typeof(MapProfile));
 
 //Servis Kayýtlarý
-//builder.Services.AddScoped<RedisServer>();
-builder.Services.AddScoped<IRedisServer, RedisServer>();
-builder.Services.AddScoped<ParameterList>();
+
+builder.Services.AddSingleton<IRedisServer, RedisServer>();
+builder.Services.AddTransient<ParameterList>();
 builder.Services.AddScoped<ITokenCreator, TokenCreator>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
@@ -51,7 +51,10 @@ builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<ICategoryService,CategoryService>();
 builder.Services.AddScoped<IUploadService, UploadService>();
-builder.Services.AddScoped<DatabaseExecutions, DatabaseExecutions>();
+builder.Services.AddTransient<DatabaseExecutions>();
+
+//builder.Services.AddHostedService<KafkaConsumerService>();
+//builder.Services.AddSingleton<KafkaConsumerService>();
 
 
 //CORS Hatasý çözümü
@@ -81,12 +84,12 @@ builder.Services.AddSingleton<ConnectionMultiplexer>(provider =>
 //SignalR
 builder.Services.AddSignalR();
 
+
 var app = builder.Build();
 
-// Redis senkronizasyonunu baþlat
-//var redisServer = app.Services.GetRequiredService<IRedisServer>();
-//var redisInterval = TimeSpan.FromMinutes(1); // Senkronizasyon aralýðý
-//redisServer.StartSyncScheduler(redisInterval);
+// KafkaConsumerService'i baþlat
+//var kafkaConsumerService = app.Services.GetRequiredService<KafkaConsumerService>();
+//kafkaConsumerService.StartListening();
 
 
 // Middleware eklenir
@@ -109,6 +112,21 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+
+
+//Redis senkronizasyonunu baþlat
+//var redisServer = app.Services.GetRequiredService<IRedisServer>();
+//var redisInterval = TimeSpan.FromMinutes(5); // Senkronizasyon aralýðý
+//redisServer.StartSyncScheduler(redisInterval);
+
+//redisServer.SubscribeToKafkaTopic("192.168.1.110.dbo.UploadImages");
+
+//Task.Run(() =>
+//{
+//    redisServer.SubscribeToKafkaTopic("192.168.1.110.dbo.UploadImages");
+//});
+
 
 app.Run();
 
