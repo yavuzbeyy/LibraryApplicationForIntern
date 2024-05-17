@@ -5,6 +5,8 @@ using Katmanli.DataAccess.DTOs;
 using Katmanli.Service.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using Microsoft.ML;
+using Microsoft.ML.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +14,9 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using Parameter = Katmanli.DataAccess.DTOs.Parameter;
+using Microsoft.ML.OnnxRuntime;
+using Microsoft.ML.OnnxRuntime.Tensors;
+using Newtonsoft.Json.Linq;
 
 namespace Katmanli.Service.Services
 {
@@ -20,10 +25,13 @@ namespace Katmanli.Service.Services
         private readonly ParameterList _parameterList;
         private readonly DatabaseExecutions _databaseExecutions;
 
+        private InferenceSession _session;
+
         public BookService(ParameterList parameterList,DatabaseExecutions databaseExecutions)
         {
             _parameterList = parameterList;
             _databaseExecutions = databaseExecutions;
+            InitializeModel();
         }
 
         public IResponse<string> Create(BookCreate model)
@@ -207,6 +215,60 @@ namespace Katmanli.Service.Services
             }
         }
 
+        //Yapay zeka model işlemleri
+        private void InitializeModel()
+        {
+            string modelPath = "C:/Users/yavuz/OneDrive/Desktop/VakifbankStaj/YapayZekaModeli/dataset/model.onnx";
+            _session = new InferenceSession(modelPath);
+        }
+
+        public IResponse<string> askQueryToAIModel(string inputBookString)
+        {
+            try
+            {
+                var inputs = new List<NamedOnnxValue>
+             {
+                  NamedOnnxValue.CreateFromTensor("string_input", new DenseTensor<string>(new[] { inputBookString }, new[] { 1, 1 }))
+            };
+
+                using (var results = _session.Run(inputs))
+                {
+                    var outputLabel = results.FirstOrDefault(item => item.Name == "output_label")?.AsTensor<string>();
+
+
+                    var outputProbabilities = results.FirstOrDefault(item => item.Name == "output_probability").Value as List<Microsoft.ML.OnnxRuntime.DisposableNamedOnnxValue>;
+
+
+                    var getListOfProbabilities = outputProbabilities[0].Value as System.Collections.Generic.Dictionary<System.String, System.Single>;
+
+
+                    var labelAndProbabilityFromModel = getListOfProbabilities.OrderByDescending(item => item.Value).First();
+
+
+                    if (outputLabel == null || outputProbabilities == null)
+                    {
+                        throw new InvalidOperationException("Model did not return any output.");
+                    }
+
+                    //Güven skoru kontrolü yapalım
+                    if (labelAndProbabilityFromModel.Value < 0.55) 
+                    {
+                        return new SuccessResponse<string>($"Düşük güven skoru. Lütfen daha belirgin parametreler giriniz. {labelAndProbabilityFromModel.Value}");
+                    }
+
+                    // string responseMessage = $"Predicted category: {labelAndProbabilityFromModel.Key} with probability: {labelAndProbabilityFromModel.Value}";
+                    string responseMessage = $"{labelAndProbabilityFromModel.Key}";
+                    return new SuccessResponse<string>(responseMessage);
+                    }
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse<string>($"Error predicting book category: {ex.Message}");
+            }
+        }
     }
-    }
+}
+    
+
+    
 

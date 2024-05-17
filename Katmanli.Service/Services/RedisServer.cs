@@ -26,7 +26,6 @@ public class RedisServer : IRedisServer
     private readonly DatabaseExecutions _databaseExecutions;
     private readonly ParameterList _parameterList;
 
-
     public RedisServer(ConnectionMultiplexer redisConnection, ParameterList parameterList, DatabaseExecutions databaseExecutions)
     {
         _redisConnection = ConnectionMultiplexer.Connect(redisConnectionString);

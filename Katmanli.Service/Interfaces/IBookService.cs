@@ -20,6 +20,7 @@ namespace Katmanli.Service.Interfaces
         IResponse<string> Create(BookCreate model);
         IResponse<string> Delete(int id);
 
+        IResponse<string> askQueryToAIModel(string inputBookString);
         IResponse<string> UpdateIsAvailable(BookUpdate model);
     }
 }

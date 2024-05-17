@@ -8,9 +8,9 @@ namespace Katmanli.DataAccess.DTOs
 {
     using System.Collections;
     using System.Collections.Generic;
+    using System.Data.Common;
 
-
-        public class ParameterList : IEnumerable<Parameter>
+    public class ParameterList : IEnumerable<Parameter>
         {
             public List<Parameter> Parameters { get; set; }
 

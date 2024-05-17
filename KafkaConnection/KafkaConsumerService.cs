@@ -58,17 +58,32 @@
 
                                 if (payload != null)
                                 {
-                                    var after = payload["after"];
+                                    var after = payload["after"]; // sonraki hali
+                                    var before = payload["before"]; // tablonun önceki hali
 
                                     if (after != null && after.Type == JTokenType.Object)
                                     {
+                                        //Redise Ekleme İlemleri
                                         var fileId = after["FileKey"]?.Value<string>();
                                         var filePath = after["FilePath"]?.Value<string>();
 
                                         if (!string.IsNullOrEmpty(fileId) && !string.IsNullOrEmpty(filePath))
                                         {
-                                            StoreFilePath(fileId, filePath);
+                                            StoreFilePathToRedis(fileId, filePath);
                                             Console.WriteLine($"FileKey: {fileId},  FilePath: {filePath}");
+                                        }
+                                    }
+                                    else 
+                                    {
+                                        //Redisten Silme işlemi
+
+                                        if (before != null && before.Type == JTokenType.Object)
+                                        {
+                                            var filekey = before["FileKey"]?.Value<string>();
+
+                                            DeleteFilePathFromRedis(filekey);
+
+                                            Console.WriteLine($"Deleted FileKey: {filekey}");
                                         }
                                     }
                                 }
@@ -84,9 +99,15 @@
 
             }
 
-            public void StoreFilePath(string filekey, string filePath)
+            public void StoreFilePathToRedis(string filekey, string filePath)
             {
                 _redisDatabase.HashSet("filepaths", filekey, filePath);
+            }
+
+            public void DeleteFilePathFromRedis(string filekey)
+            {
+                
+                _redisDatabase.HashDelete("filepaths" , filekey);
             }
 
             public string GetFilePath(string filekey)
