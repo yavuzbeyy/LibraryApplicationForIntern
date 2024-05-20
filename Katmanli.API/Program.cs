@@ -11,6 +11,11 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Exceptions;
 using StackExchange.Redis;
+using OpenTelemetry;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Extensions.Hosting;
 
 
 
@@ -36,14 +41,42 @@ builder.Host.UseSerilog(Katmanli.Core.SharedLibrary.Logging.ConfigureLogging);
 
 
 
+//Zipkin yapýlandýrmasý
+builder.Services.AddOpenTelemetry().WithTracing(tracerProviderBuilder =>
+{
+    tracerProviderBuilder
+        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("LibraryApi"))
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddZipkinExporter(options =>
+        {
+            options.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
+        });
+});
+
+builder.Services.AddSingleton<TracerProvider>(sp =>
+{
+    return Sdk.CreateTracerProviderBuilder()
+        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("LibraryApiTrace"))
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddZipkinExporter(options =>
+        {
+            options.Endpoint = new Uri("http://localhost:9411/api/v2/spans");
+        })
+        .Build();
+});
+
 
 // AutoMapper konfigürasyonu
 builder.Services.AddAutoMapper(typeof(MapProfile));
 
 //Servis Kayýtlarý
 
+builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IRedisServer, RedisServer>();
 builder.Services.AddTransient<ParameterList>();
+builder.Services.AddScoped<IMailServer , MailServer>();
 builder.Services.AddScoped<ITokenCreator, TokenCreator>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();

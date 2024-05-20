@@ -124,10 +124,10 @@ namespace Katmanli.API.Controllers
             return BadRequest();
         }
 
-        [HttpGet("BookQueryWithAIModel")]
-        public IActionResult BookQueryWithAIModel(string bookQueryString)
+        [HttpPost("BookQueryWithAIModel")]
+        public IActionResult BookQueryWithAIModel([FromBody] BookContentQueryDto bookContentQuery)
         {
-            var response = _bookService.askQueryToAIModel(bookQueryString);
+            var response = _bookService.askQueryToAIModel(bookContentQuery.bookContent);
 
             if (response.Success)
             {

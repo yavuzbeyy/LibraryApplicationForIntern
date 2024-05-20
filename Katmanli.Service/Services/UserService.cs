@@ -25,11 +25,15 @@ namespace Katmanli.Service.Services
         private readonly DatabaseExecutions _databaseExecutions;
         private readonly ParameterList _parameterList;
 
-        public UserService(ITokenCreator tokenCreator, DatabaseExecutions databaseExecutions, ParameterList parameterList)
+        //static kullanıyordum Zipkin eklemek için mailServer instance oluşturdum
+        private readonly IMailServer _mailServer;
+
+        public UserService(ITokenCreator tokenCreator, DatabaseExecutions databaseExecutions, ParameterList parameterList, IMailServer mailServer)
         {
             _tokenCreator = tokenCreator;
             _databaseExecutions = databaseExecutions;
             _parameterList = parameterList;
+            _mailServer = mailServer;
         }
 
         public IResponse<string> Create(UserCreate model)
@@ -279,7 +283,7 @@ namespace Katmanli.Service.Services
 
                 var userInformation = JsonConvert.DeserializeObject<List<UserCreate>>(jsonResult).First();
 
-                MailServer.fillMailInformations(userInformation.Email, generatedNewPassword,userInformation.Username);
+                _mailServer.fillMailInformations(userInformation.Email, generatedNewPassword,userInformation.Username);
 
                 return new SuccessResponse<string>("Şifreniz mailinize gönderildi.");
             }

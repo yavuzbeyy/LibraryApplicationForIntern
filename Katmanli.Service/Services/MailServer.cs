@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenTelemetry.Trace;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
@@ -7,19 +8,59 @@ using System.Threading.Tasks;
 
 namespace Katmanli.Service.Services
 {
-    public class MailServer
+    public interface IMailServer 
     {
-        public static void fillMailInformations(string mailAdress,string password,string username)
+        Task fillMailInformations(string mailAdress, string password, string username);
+        string SendEmail(string toAddress, string subject, string body);
+    }
+
+    public class MailServer : IMailServer
+    {
+        private readonly Tracer _tracer;
+
+        //Bir mantığı yok aslında zipkinde birbirine bağımlı apileri görmek için çalıştırdım.
+        private readonly HttpClient _httpClient;
+
+        public MailServer(TracerProvider tracerProvider, HttpClient httpClient)
         {
+            _tracer = tracerProvider.GetTracer("MailServer");
+            _httpClient = httpClient;
+        }
+
+        public async Task fillMailInformations(string mailAdress,string password,string username)
+        {
+            string apiResponse = await GetApiResponseAsync("http://localhost:5097/api/Soru/List");
             string mailstatus = SendEmail(mailAdress, $"Şifre Sıfırlama Servisi", $"Şifrenizi unuttuğunuz için üzgünüz ama endişelenmeyin sizin için yeniledik :) Şifreniz: {password} , Kullanıcı Adınız :{username}");
         }
-        public static string SendEmail(string toAddress, string subject, string body)
+
+        private async Task<string> GetApiResponseAsync(string apiUrl)
+        {
+            using (var span = _tracer.StartActiveSpan("GetApiResponse"))
+            {
+                try
+                {
+                    HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
+                    response.EnsureSuccessStatusCode();
+                    return await response.Content.ReadAsStringAsync();
+                }
+                catch (Exception ex)
+                {
+                    span.RecordException(ex);
+                    return $"Error fetching API response: {ex.Message}";
+                }
+            }
+        }
+        public string SendEmail(string toAddress, string subject, string body)
         {
             string result = "Message Sent Successfully..!!";
             string senderID = "admin@kutuphanem.com";
             const string senderPassword = "benadmin";
-            try
+
+            //Zipkin yapılandırması bu Trace kaldırılabilir.
+            using (var span = _tracer.StartActiveSpan("SendEmail"))
             {
+                try
+                {
                 SmtpClient smtp = new SmtpClient
                 {
                     Host = "localhost",
@@ -36,7 +77,9 @@ namespace Katmanli.Service.Services
                 result = "Error sending email.!!!";
             }
             return result;
+            }
         }
     }
 }
+
 

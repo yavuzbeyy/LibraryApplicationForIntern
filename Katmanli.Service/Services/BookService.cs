@@ -18,6 +18,7 @@ using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
 using Newtonsoft.Json.Linq;
 
+
 namespace Katmanli.Service.Services
 {
     public class BookService : IBookService
@@ -218,7 +219,7 @@ namespace Katmanli.Service.Services
         //Yapay zeka model işlemleri
         private void InitializeModel()
         {
-            string modelPath = "C:/Users/yavuz/OneDrive/Desktop/VakifbankStaj/YapayZekaModeli/dataset/model.onnx";
+            string modelPath = "C:/Users/yavuz/OneDrive/Desktop/VakifbankStaj/YapayZekaModeli/model.onnx";
             _session = new InferenceSession(modelPath);
         }
 
@@ -226,10 +227,19 @@ namespace Katmanli.Service.Services
         {
             try
             {
+                // Türkçe karakterler için Windows1254'e çevirme
+                //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                //Encoding windows1254 = Encoding.GetEncoding(1254); 
+                //byte[] windows1254Bytes = windows1254.GetBytes(inputBookString);
+                //string convertedBookContent = windows1254.GetString(windows1254Bytes);
+
+                //byte[] utf8Bytes = Encoding.UTF8.GetBytes(inputBookString);
+                //string convertedString = Encoding.UTF8.GetString(utf8Bytes);
+
                 var inputs = new List<NamedOnnxValue>
-             {
+                 {
                   NamedOnnxValue.CreateFromTensor("string_input", new DenseTensor<string>(new[] { inputBookString }, new[] { 1, 1 }))
-            };
+                 };
 
                 using (var results = _session.Run(inputs))
                 {
