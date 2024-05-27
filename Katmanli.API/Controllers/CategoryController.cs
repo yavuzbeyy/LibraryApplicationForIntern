@@ -21,6 +21,7 @@ namespace Katmanli.API.Controllers
             _categoryService = categoryService;
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpPost("Create")]
         public IActionResult Create(CategoryCreate categoryCreateModel)
         {
@@ -47,6 +48,7 @@ namespace Katmanli.API.Controllers
             return BadRequest(response.Message);
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpDelete("Delete")]
         public IActionResult Delete(int id)
         {
@@ -73,6 +75,7 @@ namespace Katmanli.API.Controllers
             return BadRequest(response);
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpPut("Update")]
         public IActionResult Update(CategoryUpdate categoryUpdateModel)
         {

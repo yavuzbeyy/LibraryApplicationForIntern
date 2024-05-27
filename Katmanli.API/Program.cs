@@ -113,9 +113,19 @@ builder.Services
                         ValidateAudience = false,
                         ValidateIssuerSigningKey = false,
                         ValidateLifetime = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret))
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
+                        RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role" // Rol doðrulamasý için
                     };
                 });
+
+//Sadece Adminin kullanabilmesi için API'leri için authorization iþlemi yapalým.
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy => policy.RequireClaim("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", "1"));
+});
+
+
+
 //builder.Services.AddMemoryCache();
 //builder.Services.AddResponseCaching();
 

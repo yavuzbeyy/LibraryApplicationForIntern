@@ -87,6 +87,7 @@ namespace Katmanli.API.Controllers
             return BadRequest(response);
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpDelete("Delete")]
         public IActionResult Delete(int id)
         {
@@ -99,6 +100,8 @@ namespace Katmanli.API.Controllers
 
             return BadRequest(response.Message); 
         }
+
+        [Authorize(Policy = "Admin")]
         [HttpPut("Update")]
         public IActionResult Update(UserUpdate userUpdateModel)
         {
@@ -136,6 +139,7 @@ namespace Katmanli.API.Controllers
             return BadRequest(response.Message);
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpPost("CreateBookRequest")]
         public IActionResult CreateBookRequest(BookRequestCreateDto bookRequest)
         {
@@ -160,7 +164,7 @@ namespace Katmanli.API.Controllers
             return BadRequest(response.Message);
         }
 
-
+        [Authorize(Policy = "Admin")]
         [HttpPost("CreateUserGroup")]
         public IActionResult CreateUserGroup(string groupName)
         {
@@ -186,6 +190,7 @@ namespace Katmanli.API.Controllers
             return BadRequest(response.Message);
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpDelete("DeleteGroupById")]
         public IActionResult DeleteGroupById(int groupId)
         {
@@ -199,6 +204,7 @@ namespace Katmanli.API.Controllers
             return BadRequest(response.Message);
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpPost("AddUserToGroup")]
         public IActionResult AddUserToGroup(string username,int groupId)
         {

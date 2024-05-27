@@ -66,6 +66,7 @@ namespace Katmanli.API.Controllers
             }
         }
 
+            [Authorize(Policy = "Admin")]
             [HttpPost]
             [Route("Upload")]
             public async Task<IActionResult> UploadFile(IFormFile? imageFile)
@@ -83,7 +84,7 @@ namespace Katmanli.API.Controllers
 
             }
 
-
+        [Authorize(Policy = "Admin")]
         [HttpPost]
         [Route("UploadToFtp")]
         public async Task<IActionResult> UploadFileToFtp(IFormFile? imageFile, [FromForm] int bookId)

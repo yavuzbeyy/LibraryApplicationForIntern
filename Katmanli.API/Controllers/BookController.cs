@@ -23,6 +23,7 @@ namespace Katmanli.API.Controllers
         }
 
         [AllowAnonymous]
+        //[Authorize(Policy = "Admin")]
         [HttpGet("ListAll")]
         public IActionResult List()
         {
@@ -62,6 +63,7 @@ namespace Katmanli.API.Controllers
             return BadRequest(response);
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpPost("Create")]
         public IActionResult Create(BookCreate bookCreateModel)
         {
@@ -74,7 +76,7 @@ namespace Katmanli.API.Controllers
             return BadRequest(response);
         }
 
-
+        
         [HttpGet("GetBookById")]
         public IActionResult GetBookById(int id)
         {
@@ -88,6 +90,7 @@ namespace Katmanli.API.Controllers
             return BadRequest(response);
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpDelete("Delete")]
         public IActionResult Delete(int id)
         {
@@ -100,6 +103,7 @@ namespace Katmanli.API.Controllers
             return BadRequest(response);
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpPut("Update")]
         public IActionResult Update(BookUpdate bookUpdateModel)
         {

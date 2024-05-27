@@ -34,6 +34,7 @@ namespace Katmanli.API.Controllers
             return Ok(getAllRoles);
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpDelete("Delete")]
         public IActionResult Delete(int id)
         {
@@ -47,6 +48,7 @@ namespace Katmanli.API.Controllers
             return BadRequest(response);
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpPost("Create")]
         public IActionResult Create(RoleCreate roleCreateModel)
         {

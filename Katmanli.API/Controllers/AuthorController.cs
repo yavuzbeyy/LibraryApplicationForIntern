@@ -20,6 +20,7 @@ namespace Katmanli.API.Controllers
             _authorService = authorService;
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpPost("Create")]
         public IActionResult Create(AuthorCreate authorCreateModel)
         {
@@ -47,6 +48,7 @@ namespace Katmanli.API.Controllers
             return BadRequest(response.Message);
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpDelete("Delete")]
         public IActionResult Delete(int id)
         {
@@ -73,6 +75,7 @@ namespace Katmanli.API.Controllers
             return BadRequest(response.Message);
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpPut("Update")]
         public IActionResult Update(AuthorUpdate authorUpdateModel)
         {
