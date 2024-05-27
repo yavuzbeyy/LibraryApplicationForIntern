@@ -1,4 +1,5 @@
-﻿using OpenTelemetry.Trace;
+﻿using Katmanli.DataAccess.DTOs;
+using OpenTelemetry.Trace;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Katmanli.Service.Services
 {
+   
     public interface IMailServer 
     {
         Task fillMailInformations(string mailAdress, string password, string username);
@@ -16,7 +18,10 @@ namespace Katmanli.Service.Services
 
     public class MailServer : IMailServer
     {
+
         private readonly Tracer _tracer;
+
+        private readonly int a;
 
         //Bir mantığı yok aslında zipkinde birbirine bağımlı apileri görmek için çalıştırdım.
         private readonly HttpClient _httpClient;
@@ -74,7 +79,7 @@ namespace Katmanli.Service.Services
             }
             catch (Exception ex)
             {
-                result = "Error sending email.!!!";
+                result = "Error sending email.!!!" + ex;
             }
             return result;
             }

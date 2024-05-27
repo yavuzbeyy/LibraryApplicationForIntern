@@ -17,7 +17,7 @@ using Katmanli.DataAccess.DTOs;
 
 namespace Katmanli.DataAccess.Connection
 {
-    public class DatabaseExecutions
+    public class DatabaseExecutions : IDatabaseExecutions
     {
 
         private readonly string _connectionString;
@@ -88,7 +88,6 @@ namespace Katmanli.DataAccess.Connection
                     int rowsAffected = command.ExecuteNonQuery();
 
                     return rowsAffected;
-
                 }
             }
         }

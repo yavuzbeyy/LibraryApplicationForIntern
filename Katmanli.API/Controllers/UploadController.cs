@@ -1,11 +1,13 @@
 ﻿using Katmanli.Core.Response;
 using Katmanli.Core.SharedLibrary;
 using Katmanli.Service.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Katmanli.API.Controllers
 {
+        [Authorize]
         [Route("file")]
         [ApiController]
         public class UploadController : ControllerBase

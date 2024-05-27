@@ -17,6 +17,7 @@ using Parameter = Katmanli.DataAccess.DTOs.Parameter;
 using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
 using Newtonsoft.Json.Linq;
+using Confluent.Kafka;
 
 
 namespace Katmanli.Service.Services
@@ -177,18 +178,18 @@ namespace Katmanli.Service.Services
         {
                 try
                 {
-                    var parameterList = new ParameterList();
-                    parameterList.Add("@BookId", model.Id);
-                    parameterList.Add("@Title", model.Title);
-                    parameterList.Add("@Description", model.Description);
-                     parameterList.Add("@PublicationYear", model.PublicationYear);
-                    parameterList.Add("@NumberOfPages", model.NumberOfPages);
-                    parameterList.Add("@IsAvailable", model.isAvailable);
-                    parameterList.Add("@AuthorId", model.AuthorId);
-                    parameterList.Add("@CategoryId", model.CategoryId);
-                    parameterList.Add("@UpdatedDate", DateTime.Now);
+                _parameterList.Reset();
+                _parameterList.Add("@BookId", model.Id);
+                 _parameterList.Add("@Title", model.Title);
+                 _parameterList.Add("@Description", model.Description);
+                 _parameterList.Add("@PublicationYear", model.PublicationYear);
+                 _parameterList.Add("@NumberOfPages", model.NumberOfPages);
+                 _parameterList.Add("@IsAvailable", model.isAvailable);
+                 _parameterList.Add("@AuthorId", model.AuthorId);
+                 _parameterList.Add("@CategoryId", model.CategoryId);
+                 _parameterList.Add("@UpdatedDate", DateTime.Now);
 
-                    var jsonResult = _databaseExecutions.ExecuteQuery("Sp_BookUpdate", parameterList);
+                    var jsonResult = _databaseExecutions.ExecuteQuery("Sp_BookUpdate", _parameterList);
 
                     return new SuccessResponse<string>(Messages.Update("Book"));
                 }
@@ -228,13 +229,22 @@ namespace Katmanli.Service.Services
             try
             {
                 // Türkçe karakterler için Windows1254'e çevirme
-                //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                //Encoding windows1254 = Encoding.GetEncoding(1254); 
+              // Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+               // Encoding windows1254 = Encoding.GetEncoding(1254); 
                 //byte[] windows1254Bytes = windows1254.GetBytes(inputBookString);
                 //string convertedBookContent = windows1254.GetString(windows1254Bytes);
 
                 //byte[] utf8Bytes = Encoding.UTF8.GetBytes(inputBookString);
                 //string convertedString = Encoding.UTF8.GetString(utf8Bytes);
+                //string convertedBookContent = windows1254.GetString(utf8Bytes);
+
+
+                //Encoding iso = Encoding.GetEncoding("ISO-8859-9");
+                //Encoding utf8 = Encoding.UTF8;
+                //byte[] utfBytes = utf8.GetBytes(inputBookString);
+                //byte[] w1254Bytes = Encoding.Convert(utf8, iso, utfBytes);
+                //string msg = iso.GetString(w1254Bytes);
+
 
                 var inputs = new List<NamedOnnxValue>
                  {

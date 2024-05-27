@@ -1,4 +1,5 @@
-﻿using Katmanli.DataAccess.Entities;
+﻿using Katmanli.DataAccess.DTOs;
+using Katmanli.DataAccess.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace Katmanli.DataAccess.Connection
 {
     public interface IDatabaseExecutions
     {
-        List<Role> ExecuteStoredProcedure(string storedProcedureName);
+        string ExecuteQuery(string storedProcedureName, ParameterList parameters);
+        int ExecuteDeleteQuery(string storedProcedureName, ParameterList parameters);
     }
 }

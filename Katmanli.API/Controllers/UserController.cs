@@ -3,11 +3,13 @@ using Katmanli.Core.Interfaces.ServiceInterfaces;
 using Katmanli.Core.Response;
 using Katmanli.DataAccess.Connection;
 using Katmanli.DataAccess.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Katmanli.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -58,6 +60,7 @@ namespace Katmanli.API.Controllers
             return BadRequest(response.Message);
         }
 
+        [AllowAnonymous]
         [HttpPost("Create")]
         public IActionResult Create(UserCreate userCreateModel)
         {
@@ -108,6 +111,7 @@ namespace Katmanli.API.Controllers
             return BadRequest(response.Message);
         }
 
+        [AllowAnonymous]
         [HttpPost("Login")]
         public IActionResult Login(UserLoginDto userLoginModel)
         {

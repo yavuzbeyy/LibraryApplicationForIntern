@@ -29,9 +29,8 @@ namespace Katmanli.Core.SharedLibrary
             // var username = context.User.Identity.Name;
             //Console.WriteLine("username is : " + username);
 
-            var stopwatch = Stopwatch.StartNew(); // İşlem süresini başlat
+            var stopwatch = Stopwatch.StartNew(); 
             
-            // Trace id'yi isteğe ekleyerek ilerle
             context.Items["TraceId"] = traceId;
 
             // Log girişlerine trace id'yi ekleyerek ilerle
@@ -42,7 +41,7 @@ namespace Katmanli.Core.SharedLibrary
                 await _next(context);
                 _logger.LogInformation("TraceId: {TraceId} - Request finished for {Method} {Path}", traceId, context.Request.Method, context.Request.Path);
 
-                stopwatch.Stop(); // İşlem süresini durdur
+                stopwatch.Stop(); 
             }
 
         }

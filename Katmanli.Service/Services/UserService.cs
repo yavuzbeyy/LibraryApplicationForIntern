@@ -19,11 +19,17 @@ using System.Threading.Tasks;
 
 namespace Katmanli.Service.Services
 {
+
     public class UserService : IUserService
     {
         private readonly ITokenCreator _tokenCreator;
         private readonly DatabaseExecutions _databaseExecutions;
         private readonly ParameterList _parameterList;
+
+        //// Delegate tanımlaması
+        //public delegate void Notify(string message);
+
+        //public Notify delegateornek;
 
         //static kullanıyordum Zipkin eklemek için mailServer instance oluşturdum
         private readonly IMailServer _mailServer;
@@ -43,17 +49,17 @@ namespace Katmanli.Service.Services
                 //Hashlenmiş Password
                 string hashedPassword = _tokenCreator.GenerateHashedPassword(model.Password);
 
-                var parameterList = new ParameterList();
+                _parameterList.Reset();
 
-                parameterList.Add("@Name", model.Name);
-                parameterList.Add("@Surname", model.Surname);
-                parameterList.Add("@Username", model.Username);
-                parameterList.Add("@Email", model.Email);
-                parameterList.Add("@UpdatedDate", DateTime.Now);
-                parameterList.Add("@Password", hashedPassword);
-                parameterList.Add("@RoleId", model.RoleId);
+                _parameterList.Add("@Name", model.Name);
+                _parameterList.Add("@Surname", model.Surname);
+                _parameterList.Add("@Username", model.Username);
+                _parameterList.Add("@Email", model.Email);
+                _parameterList.Add("@UpdatedDate", DateTime.Now);
+                _parameterList.Add("@Password", hashedPassword);
+                _parameterList.Add("@RoleId", model.RoleId);
 
-                string result = _databaseExecutions.ExecuteQuery("Sp_UserCreate", parameterList);
+                string result = _databaseExecutions.ExecuteQuery("Sp_UserCreate", _parameterList);
 
                 return new SuccessResponse<string>("Kullanıcı başarılı bir şekilde kayıt edildi.");
             }
@@ -137,6 +143,9 @@ namespace Katmanli.Service.Services
             }
         }
 
+       
+
+       
 
 
         public IResponse<IEnumerable<UserQuery>> FindById(int id)
@@ -148,6 +157,7 @@ namespace Katmanli.Service.Services
                 var jsonResult = _databaseExecutions.ExecuteQuery("Sp_UsersGetById", _parameterList);
 
                 var users = JsonConvert.DeserializeObject<IEnumerable<UserQuery>>(jsonResult);
+
 
                 if (users.IsNullOrEmpty())
                 {

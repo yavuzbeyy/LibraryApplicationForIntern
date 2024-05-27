@@ -11,9 +11,7 @@ namespace Katmanli.API.Controllers
     [ApiController]
     public class AuthorController : ControllerBase
     {
-        private readonly IAuthorService _authorService;
-
-       
+        private readonly IAuthorService _authorService;  
 
         public AuthorController(IAuthorService authorService)
         {

@@ -58,7 +58,7 @@ namespace Katmanli.Core.SharedLibrary
                 claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
                 claims.Add(new Claim("roles", role.ToString()));
             }
-
+            
             JwtSecurityToken securityToken =
                 new JwtSecurityToken(
                     signingCredentials: credentials,

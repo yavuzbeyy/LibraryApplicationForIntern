@@ -9,7 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Katmanli.API.Controllers
 {
-    [AllowAnonymous]
+    //[AllowAnonymous]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BookController : ControllerBase
@@ -21,6 +22,7 @@ namespace Katmanli.API.Controllers
             _bookService = bookService;
         }
 
+        [AllowAnonymous]
         [HttpGet("ListAll")]
         public IActionResult List()
         {
