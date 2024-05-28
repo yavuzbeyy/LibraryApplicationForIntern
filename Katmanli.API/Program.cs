@@ -26,7 +26,7 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 
-// Swagger servisi ve swagger json ?retimi i?in.
+// Swagger servisi ve swagger json üretimi için.
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApp 99 API", Version = "v1" });
@@ -128,8 +128,6 @@ builder.Services.AddAuthorization(options =>
 
 //builder.Services.AddMemoryCache();
 //builder.Services.AddResponseCaching();
-
-
 
 
 // AutoMapper konfigürasyonu

@@ -20,12 +20,11 @@ namespace Katmanli.Core.SharedLibrary
     public class TokenCreator : ITokenCreator
     {
         private readonly IConfiguration _configuration;
-
         public TokenCreator(IConfiguration configuration)
         {
             _configuration = configuration;
         }
-
+        
         public string GenerateHashedPassword(string password)
         {
             string secretPasswordKey = _configuration.GetValue<string>("AppSettings:PasswordKey");
@@ -52,6 +51,7 @@ namespace Katmanli.Core.SharedLibrary
             claims.Add(new Claim("username", username));
             claims.Add(new Claim(ClaimTypes.Name, username));
             claims.Add(new Claim("userId", userid.ToString())); 
+            
 
             foreach (var role in roles)
             {
@@ -69,6 +69,4 @@ namespace Katmanli.Core.SharedLibrary
             return token;
         }
     }
-
-
 }
