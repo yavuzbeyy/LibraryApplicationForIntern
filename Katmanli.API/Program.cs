@@ -60,7 +60,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Host.UseSerilog(Katmanli.Core.SharedLibrary.Logging.ConfigureLogging);
+//builder.Host.UseSerilog(Katmanli.Core.SharedLibrary.Logging.ConfigureLogging);
 
 // Serilog yapýlandýrmasý
 //var loggerConfiguration = new LoggerConfiguration()
@@ -199,7 +199,7 @@ var app = builder.Build();
 
 
 // Middleware eklenir
-app.UseRequestLoggingMiddleware();
+//app.UseRequestLoggingMiddleware();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
