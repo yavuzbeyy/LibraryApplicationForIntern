@@ -7,7 +7,7 @@ pool:
     - agent.name -equals agent
 
 variables:
-  solution: '**/*.sln'
+  solution: 'LibraryApp.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
