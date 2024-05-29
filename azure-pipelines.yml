@@ -10,7 +10,6 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  imageName: 'yourdockerhubusername/libraryapp' # Docker Hub kullanıcı adınızı ve image adınızı buraya ekleyin
 
 steps:
 - task: NuGetToolInstaller@1
@@ -25,18 +24,21 @@ steps:
     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site" /clp:NoSummary;NoItemAndPropertyList /verbosity:normal'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-
-- task: Docker@2
-  inputs:
-    containerRegistry: 'dockerhub' # Docker Hub bağlantı servisini ayarlayın
-    repository: '$(imageName)'
-    command: 'buildAndPush'
-    Dockerfile: '**/Dockerfile'
-    tags: |
-      latest
-      $(Build.BuildId)
+    clean: true
 
 - task: VSTest@2
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(build.artifactStagingDirectory)'
+    Contents: '**'
+    TargetFolder: '$(build.artifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(build.artifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
