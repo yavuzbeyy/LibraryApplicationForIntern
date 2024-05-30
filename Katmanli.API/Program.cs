@@ -26,6 +26,8 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 
+
+
 // Swagger servisi ve swagger json üretimi için.
 builder.Services.AddSwaggerGen(c =>
 {
