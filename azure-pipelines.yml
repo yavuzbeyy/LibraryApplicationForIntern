@@ -10,6 +10,7 @@ variables:
   solution: 'LibraryApp.sln'  # GitHub deposundaki çözüm dosyasının yolu
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  packageLocation: '$(Build.ArtifactStagingDirectory)/WebApp.zip'  # Paketlenen uygulama dosyasının konumu
 
 steps:
 - task: NuGetToolInstaller@1
