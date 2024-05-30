@@ -43,3 +43,10 @@ steps:
     PathtoPublish: '$(build.artifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
+- task: AzureWebApp@1
+  displayName: 'Deploy to Azure App Service'
+  inputs:
+    azureSubscription: 'LibraryBackendService'  # Azure servis bağlantınızın adı
+    appType: 'webApp'
+    appName: 'kutuphaneapi'  # Azure App Service adınız
+    package: '$(packageLocation)'
