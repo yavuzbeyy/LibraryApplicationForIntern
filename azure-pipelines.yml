@@ -38,7 +38,7 @@ steps:
   inputs:
     SourceFolder: '$(Build.ArtifactStagingDirectory)'
     Contents: '**'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/drop'
 
 - task: PublishBuildArtifacts@1
   inputs:
