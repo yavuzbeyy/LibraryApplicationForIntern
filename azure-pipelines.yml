@@ -26,6 +26,7 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     msbuildArchitecture: 'x64'
+    msbuildArguments: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(packageLocation)" /p:DeployIisAppPath="Default Web Site" /verbosity:normal'
     enableDefaultLogger: false
 
 - task: VSTest@2
@@ -35,19 +36,20 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    SourceFolder: '$(build.artifactStagingDirectory)'
+    SourceFolder: '$(Build.ArtifactStagingDirectory)'
     Contents: '**'
-    TargetFolder: '$(build.artifactStagingDirectory)'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(build.artifactStagingDirectory)'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
+
 - task: AzureWebApp@1
   displayName: 'Deploy to Azure App Service'
   inputs:
     azureSubscription: 'LibraryBackendService'  # Azure servis bağlantınızın adı
     appType: 'webApp'
     appName: 'kutuphaneapi'  # Azure App Service adınız
-    package: '$(packageLocation)'
+    package: '$(Build.ArtifactStagingDirectory)/WebApp.zip'
