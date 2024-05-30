@@ -26,6 +26,7 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     msbuildArchitecture: 'x64'  # MSBuild'in x64 sürümünü kullan
+    disableAutoInferredProjects: true
 
 - task: VSTest@2
   inputs:
