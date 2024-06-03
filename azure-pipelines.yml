@@ -10,7 +10,7 @@ variables:
   solution: 'LibraryApp.sln'  # GitHub deposundaki çözüm dosyasının yolu
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  packageLocation: '$(Build.ArtifactStagingDirectory)/WebApp.zip'  # Paketlenen uygulama dosyasının konumu
+  packageLocation: '$(Build.ArtifactStagingDirectory)\WebApp.zip'  # Paketlenen uygulama dosyasının konumu
 
 steps:
 - task: NuGetToolInstaller@1
@@ -29,16 +29,6 @@ steps:
     msbuildArguments: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(packageLocation)" /verbosity:normal'
     enableDefaultLogger: false
 
-- task: CmdLine@2
-  inputs:
-    script: |
-      if exist "$(Build.ArtifactStagingDirectory)\WebApp.zip" (
-        echo Package found
-      ) else (
-        echo Package not found
-        exit 1
-      )
-
 - task: VSTest@2
   inputs:
     platform: '$(buildPlatform)'
@@ -47,13 +37,13 @@ steps:
 - task: CopyFiles@2
   inputs:
     SourceFolder: '$(Build.ArtifactStagingDirectory)'
-    Contents: '**'
+    Contents: 'WebApp.zip'
     TargetFolder: '$(Build.ArtifactStagingDirectory)/drop'
 
 - task: CmdLine@2
   inputs:
     script: |
-      if exist "$(Build.ArtifactStagingDirectory)\WebApp.zip" (
+      if exist "$(Build.ArtifactStagingDirectory)\drop\WebApp.zip" (
         echo Package found
       ) else (
         echo Package not found
