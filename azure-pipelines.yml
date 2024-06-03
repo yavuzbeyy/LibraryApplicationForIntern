@@ -34,24 +34,11 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: '$(Build.ArtifactStagingDirectory)'
-    Contents: '**'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)/drop'
-
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
-
-- task: DownloadBuildArtifacts@0
-  inputs:
-    buildType: 'current'
-    downloadType: 'single'
-    artifactName: 'drop'
-    downloadPath: '$(Build.ArtifactStagingDirectory)'
 
 - task: AzureWebApp@1
   displayName: 'Deploy to Azure App Service'
@@ -59,4 +46,4 @@ steps:
     azureSubscription: 'LibraryBackendService'  # Azure servis bağlantınızın adı
     appType: 'webApp'
     appName: 'kutuphaneapi'  # Azure App Service adınız
-    package: '$(Build.ArtifactStagingDirectory)/drop/WebApp.zip'
+    package: '$(Build.ArtifactStagingDirectory)/WebApp.zip'
