@@ -10,7 +10,7 @@ variables:
   solution: 'LibraryApp.sln'  # GitHub deposundaki çözüm dosyasının yolu
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  packageLocation: '$(Build.ArtifactStagingDirectory)\WebApp.zip'  # Paketlenen uygulama dosyasının konumu
+  publishDirectory: '$(Build.ArtifactStagingDirectory)/publish'  # Yayınlanan dosyaların konumu
 
 steps:
 - task: NuGetToolInstaller@1
@@ -20,13 +20,13 @@ steps:
     restoreSolution: '$(solution)'
 
 - task: VSBuild@1
-  displayName: 'Build solution'
+  displayName: 'Build and Publish solution'
   inputs:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     msbuildArchitecture: 'x64'
-    msbuildArguments: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(packageLocation)" /verbosity:normal'
+    msbuildArguments: '/p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /p:publishUrl=$(publishDirectory) /p:Configuration=$(buildConfiguration) /verbosity:normal'
     enableDefaultLogger: false
 
 - task: VSTest@2
@@ -36,10 +36,9 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    SourceFolder: '$(Build.ArtifactStagingDirectory)'
-    Contents: 'WebApp.zip'
+    SourceFolder: '$(publishDirectory)'
+    Contents: '**'
     TargetFolder: '$(Build.ArtifactStagingDirectory)/drop'
-
 
 - task: PublishBuildArtifacts@1
   inputs:
@@ -53,4 +52,4 @@ steps:
     azureSubscription: 'LibraryBackendService'  # Azure servis bağlantınızın adı
     appType: 'webApp'
     appName: 'kutuphaneapi'  # Azure App Service adınız
-    package: '$(Build.ArtifactStagingDirectory)/drop/WebApp.zip'
+    package: '$(Build.ArtifactStagingDirectory)/drop'
