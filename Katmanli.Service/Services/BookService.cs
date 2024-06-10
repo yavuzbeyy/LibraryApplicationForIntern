@@ -228,23 +228,6 @@ namespace Katmanli.Service.Services
         {
             try
             {
-                // Türkçe karakterler için Windows1254'e çevirme
-              // Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-               // Encoding windows1254 = Encoding.GetEncoding(1254); 
-                //byte[] windows1254Bytes = windows1254.GetBytes(inputBookString);
-                //string convertedBookContent = windows1254.GetString(windows1254Bytes);
-
-                //byte[] utf8Bytes = Encoding.UTF8.GetBytes(inputBookString);
-                //string convertedString = Encoding.UTF8.GetString(utf8Bytes);
-                //string convertedBookContent = windows1254.GetString(utf8Bytes);
-
-
-                //Encoding iso = Encoding.GetEncoding("ISO-8859-9");
-                //Encoding utf8 = Encoding.UTF8;
-                //byte[] utfBytes = utf8.GetBytes(inputBookString);
-                //byte[] w1254Bytes = Encoding.Convert(utf8, iso, utfBytes);
-                //string msg = iso.GetString(w1254Bytes);
-
 
                 var inputs = new List<NamedOnnxValue>
                  {

@@ -152,6 +152,7 @@ namespace Katmanli.API.Controllers
             return BadRequest(response.Message);
         }
 
+        [AllowAnonymous]
         [HttpPost("ForgetPassword")]
         public IActionResult ForgetPassword(string username)
         {
